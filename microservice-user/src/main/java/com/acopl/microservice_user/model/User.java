@@ -2,12 +2,14 @@ package com.acopl.microservice_user.model;
 
 import java.util.List;
 
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,8 +36,11 @@ public class User {
     private String rol;
 
     @ElementCollection
-    //Permite guardar List<String> como una tabla secundaria
-    //confirmar con nitchen
+    @CollectionTable(
+        name = "user_permisos",
+        joinColumns = @JoinColumn(name = "user_id")
+    )
+    @Column(name = "permiso")
     private List<String> permisos;
 
 }

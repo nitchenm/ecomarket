@@ -7,7 +7,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 //@EnableFeignClients
 @EnableDiscoveryClient
-@SpringBootApplication(scanBasePackages = "com.microservice_user")
+@SpringBootApplication
 public class MicroserviceUserApplication {
     public static void main(String[] args) {
         SpringApplication.run(MicroserviceUserApplication.class, args);
