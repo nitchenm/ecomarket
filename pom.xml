@@ -23,6 +23,7 @@
     <module>microservice-eureka</module>
     <module>microservice-gateway</module>
     <module>microservice-sale</module>
+    <module>microservice-user</module>
   </modules>
 
   <url>http://www.example.com</url>
