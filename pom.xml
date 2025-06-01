@@ -24,6 +24,7 @@
     <module>microservice-gateway</module>
     <module>microservice-sale</module>
     <module>microservice-user</module>
+    <module>microservice-product</module>
   </modules>
 
   <url>http://www.example.com</url>
