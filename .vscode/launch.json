@@ -5,14 +5,16 @@
             "name": "MicroserviceGatewayApplication",
             "request": "launch",
             "mainClass": "com.acopl.microservice_gateway.MicroserviceGatewayApplication",
-            "projectName": "microservice-gateway"
+            "projectName": "microservice-gateway",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=54792 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=microservice-gateway"
         },
         {
             "type": "java",
             "name": "MicroserviceEurekaApplication",
             "request": "launch",
             "mainClass": "com.acopl.microservice_eureka.MicroserviceEurekaApplication",
-            "projectName": "microservice-eureka"
+            "projectName": "microservice-eureka",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=54783 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=microservice-eureka"
         },
         {
             "type": "java",
@@ -21,6 +23,38 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.acopl.microservice_config.MicroserviceConfigApplication",
             "projectName": "microservice-config",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=54773 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=microservice-config"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MicroserviceSaleApplication<microservice-sale>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.acopl.microservice_sale.MicroserviceSaleApplication",
+            "projectName": "microservice-sale",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=55191 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=microservice-sale"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MicroserviceProductApplication<microservice-product>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.microservice_product.MicroserviceProductApplication",
+            "projectName": "microservice-product",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MicroserviceUserApplication<microservice-user>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.acopl.microservice_user.MicroserviceUserApplication",
+            "projectName": "microservice-user",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }

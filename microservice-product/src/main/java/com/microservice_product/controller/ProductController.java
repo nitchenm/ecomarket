@@ -81,7 +81,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/stock")
     public ResponseEntity<Integer> getStockById(@PathVariable Long id){
         try {
             int productStock = productService.getStockById(id);

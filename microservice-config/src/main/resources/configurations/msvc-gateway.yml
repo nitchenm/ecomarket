@@ -1,5 +1,5 @@
 server:
-  port: 8085
+  port: 8080
 
 spring:
   application:
@@ -17,8 +17,7 @@ spring:
         - id: sale
           uri: http://localhost:9090
           predicates:
-            - Path=/api/v1/sale/**
-                    
+            - Path=/api/v1/sale/**                    
 eureka:
   cliente:
     register-with-eureka: false
