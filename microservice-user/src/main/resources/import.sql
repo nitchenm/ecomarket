@@ -1,0 +1,10 @@
+INSERT INTO user (id, name, email, rol) VALUES (1, 'Ana López', 'ana@example.com', 'ADMIN');
+INSERT INTO user (id, name, email, rol) VALUES (2, 'Juan Pérez', 'juan@example.com', 'USER');
+INSERT INTO user (id, name, email, rol) VALUES (3, 'Lucía Gómez', 'lucia@example.com', 'USER');
+INSERT INTO user (id, name, email, rol) VALUES (4, 'Carlos Ruiz', 'carlos@example.com', 'USER');
+INSERT INTO user (id, name, email, rol) VALUES (5, 'María Fernández', 'maria@example.com', 'USER');
+INSERT INTO user (id, name, email, rol) VALUES (6, 'Pedro Salas', 'pedro@example.com', 'USER');
+INSERT INTO user (id, name, email, rol) VALUES (7, 'Elena Torres', 'elena@example.com', 'USER');
+INSERT INTO user (id, name, email, rol) VALUES (8, 'David Navas', 'david@example.com', 'USER');
+INSERT INTO user (id, name, email, rol) VALUES (9, 'Laura Díaz', 'laura@example.com', 'USER');
+INSERT INTO user (id, name, email, rol) VALUES (10, 'Mateo Ríos', 'mateo@example.com', 'ADMIN');
