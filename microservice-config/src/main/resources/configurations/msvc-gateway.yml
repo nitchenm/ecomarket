@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8010
 
 spring:
   application:
@@ -10,14 +10,18 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: user
-          uri: http://localhost:8090
+        - id: users
+          uri: http://localhost:8050
           predicates:             
-            - Path=/api/v1/user/**
+            - Path=/api/v1/users/**
         - id: sale
           uri: http://localhost:9090
           predicates:
-            - Path=/api/v1/sale/**                    
+            - Path=/api/v1/sale/**
+        - id: product
+          uri: http://localhost:8060
+          predicates:
+            - Path=/api/v1/product/**
 eureka:
   cliente:
     register-with-eureka: false
