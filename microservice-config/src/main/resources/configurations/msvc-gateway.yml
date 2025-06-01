@@ -11,13 +11,17 @@ spring:
           enabled: true
       routes:
         - id: user
-          uri: http://localhost:8090
+          uri: http://localhost:8080
           predicates:             
             - Path=/api/v1/user/**
         - id: sale
           uri: http://localhost:9090
           predicates:
-            - Path=/api/v1/sale/**                    
+            - Path=/api/v1/sale/**
+        - id: product
+          uri: http://localhost:8060
+          predicates:
+            - Path=/api/v1/product/**
 eureka:
   cliente:
     register-with-eureka: false
