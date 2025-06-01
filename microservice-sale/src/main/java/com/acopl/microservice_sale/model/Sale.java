@@ -28,4 +28,6 @@ public class Sale {
 
     private float total;
 
+    private Long clientId;
+
 }
