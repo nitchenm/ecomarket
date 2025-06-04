@@ -1,0 +1,22 @@
+#server:
+#  port: 8090
+spring:
+  application:
+    name: msvc-user
+  config:
+    import: optional:configserver:http://localhost:8888
+# PREGUNTAR A PROFE POR QUÉ SE TUVO QUE FORZAR ESTA CONFIGURACION
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ecomarketdtbs
+    username: root
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+logging:
+  level:
+    org.springframework.boot.context.config: DEBUG
