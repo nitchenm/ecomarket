@@ -21,7 +21,9 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
+    //para evitar que hayan 2 productos con nombres iguales
+    //Nos protege contra las ambiguedades
     private String name;
 
     @Column(nullable = false)
