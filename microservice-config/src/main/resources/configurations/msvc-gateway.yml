@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8086
 
 spring:
   application:
@@ -8,7 +8,7 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true
+          enabled: false
       routes:
         - id: users
           uri: http://localhost:8050
@@ -23,5 +23,16 @@ spring:
           predicates:
             - Path=/api/v1/product/**
 eureka:
-  cliente:
+  client:
     register-with-eureka: false
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+  gateway:
+    enabled: true
