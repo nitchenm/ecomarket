@@ -1,8 +1,8 @@
 server:
-  port: 8050
+  port: 8070
 spring:
   application:
-    name: msvc-user
+    name: msvc-branch
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ecomarketdtbs
@@ -10,7 +10,7 @@ spring:
     password:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     show-sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect

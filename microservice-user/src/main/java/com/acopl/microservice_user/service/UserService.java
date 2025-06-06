@@ -48,7 +48,6 @@ public class UserService {
         existingUser.setName(updatedUser.getName());
         existingUser.setEmail(updatedUser.getEmail());
         existingUser.setRol(updatedUser.getRol());
-        existingUser.setPermisos(updatedUser.getPermisos());
 
         return userRepository.save(existingUser);
     }
