@@ -52,4 +52,9 @@ public class ProductService {
         return productToConsult.getQuantity();
     }
 
+
+    public List<Product> findAllProductsBySale(Long id){
+        return productRepository.findBySaleId(id);
+    }
+
 }

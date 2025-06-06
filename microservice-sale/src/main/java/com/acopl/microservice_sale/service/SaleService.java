@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.acopl.microservice_sale.client.ClientProduct;
+import com.acopl.microservice_sale.dto.ProductDTO;
 import com.acopl.microservice_sale.model.Sale;
 import com.acopl.microservice_sale.repository.ISaleRepository;
 
@@ -14,6 +16,9 @@ public class SaleService {
 
     @Autowired
     private ISaleRepository saleRepository;
+
+    @Autowired
+    private ClientProduct clientProduct;
 
     public List<Sale> findAllSales(){
         return saleRepository.findAll();
@@ -35,5 +40,13 @@ public class SaleService {
         return saleRepository.findByClientId(id);
     }
 
+
+    public List<ProductDTO> findAllProductsBySale(Long id){
+        Sale sale = saleRepository.findById(id).orElseThrow(() -> new RuntimeException("Sale not found."));
+
+        List<ProductDTO> productsBySale = clientProduct.findAllProductsBySale(id);
+
+        return productsBySale;
+    }
 
 }

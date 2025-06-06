@@ -91,4 +91,11 @@ public class ProductController {
         }
     }
 
+
+    @GetMapping("Search-by-id/{id}")
+    public ResponseEntity<List<Product>> findAllProductsBySale(@PathVariable Long id){
+        List<Product> productsBySale = productService.findAllProductsBySale(id);
+        return ResponseEntity.ok(productsBySale);
+    }
+
 }
