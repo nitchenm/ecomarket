@@ -30,4 +30,6 @@ public class Sale {
 
     private Long clientId;
 
+    private Long productId;
+
 }

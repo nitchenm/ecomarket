@@ -18,6 +18,7 @@ import com.acopl.microservice_sale.service.SaleService;
 
 
 
+
 @Controller
 @RequestMapping("/api/v1/sale")
 public class SaleController {
@@ -58,6 +59,11 @@ public class SaleController {
         }
     }
 
+    @GetMapping("/search-by-id/{id}")
+    public ResponseEntity<List<Sale>> findAllSaleByUser(@PathVariable Long id) {
+        saleService.findAllSaleByUser(id);
+        return ResponseEntity.ok().build();
+    }
     
     
 }
