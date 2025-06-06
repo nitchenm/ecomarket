@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.acopl.microservice_user.client.clientSale;
+import com.acopl.microservice_user.dto.SaleDTO;
 import com.acopl.microservice_user.model.User;
 import com.acopl.microservice_user.repository.UserRepository;
 
@@ -16,6 +18,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private clientSale clientSale;
 
     //obtiene todos los usuarios
     public List<User> findall() {
@@ -59,5 +64,13 @@ public class UserService {
             .map(user ->
                 user.getEmail().equals(email) && user.getRol().equals(rol)
             ).orElse(false);
-}
+    }
+
+    public List<SaleDTO> findAllSaleByUser(Long id){
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
+
+        List<SaleDTO> saleDTOList = clientSale.findAllSaleByUser(id);
+
+        return saleDTOList;
+    }
 }

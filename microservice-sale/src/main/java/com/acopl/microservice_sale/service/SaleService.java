@@ -30,4 +30,10 @@ public class SaleService {
     public void deleteSale(Long id){
         saleRepository.deleteById(id);
     }
+
+    public List<Sale> findAllSaleByUser(Long id){
+        return saleRepository.findByClientId(id);
+    }
+
+
 }
