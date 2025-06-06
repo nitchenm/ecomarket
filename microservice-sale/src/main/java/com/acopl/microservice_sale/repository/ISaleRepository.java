@@ -14,5 +14,6 @@ public interface ISaleRepository extends JpaRepository<Sale, Long> {
     
     List<Sale> findByClientId(Long clientId);
 
+
     
 }
