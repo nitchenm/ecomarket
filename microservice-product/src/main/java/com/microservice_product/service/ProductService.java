@@ -54,15 +54,16 @@ public class ProductService {
     }
 
 
-   public List<ProductDTO> getProductsByIds(List<Long> ids) {
-        return productRepository.findAllById(ids).stream()
-            .map(p -> ProductDTO.builder()
-                    .id(p.getId())
-                    .name(p.getName())
-                    .quantity(p.getQuantity())
-                    .price(p.getPrice())
-                    .build())
-            .toList();
+   public ProductDTO getProductsByIds(Long id) {
+        Product productToGet = productRepository.findById(id).orElseThrow(()-> new RuntimeException("Product not found"));
+        ProductDTO product = new ProductDTO();
+
+        product.setId(productToGet.getId());
+        product.setName(productToGet.getName());
+        product.setQuantity(productToGet.getQuantity());
+        product.setPrice(productToGet.getPrice());
+
+        return product;
     }
 
 

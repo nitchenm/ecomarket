@@ -68,8 +68,8 @@ public class SaleController {
 
 
     @GetMapping("/search-products-by-id/{id}")
-    public ResponseEntity<List<ProductDTO>> findAllProductsBySale(@PathVariable Long id) {
-        List<ProductDTO> productsBySale = saleService.findAllProductsBySale(id);
+    public ResponseEntity<ProductDTO> findAllProductsBySale(@PathVariable Long id) {
+        ProductDTO productsBySale = saleService.findAllProductsBySale(id);
         return ResponseEntity.ok(productsBySale);
     }
     
