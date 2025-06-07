@@ -3,13 +3,12 @@ package com.acopl.microservice_sale.model;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.persistence.Transient;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +32,7 @@ public class Sale {
 
     private Long clientId;
 
+    
     @Transient
     private List<Long> productIds;
 
