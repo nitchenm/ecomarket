@@ -53,4 +53,5 @@ CREATE DATABASE ecomarketdtbs;
 - `microservice-config`: Configuración centralizada
 
 ---
+![Ecomarket drawio](https://github.com/user-attachments/assets/0c0f2a14-3ab4-487c-809f-272082edeb09)
 
