@@ -11,6 +11,9 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+    sql:
+      init:
+        mode: always
     show-sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
