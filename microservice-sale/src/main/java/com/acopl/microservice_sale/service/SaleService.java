@@ -41,12 +41,11 @@ public class SaleService {
     }
 
 
-    public List<ProductDTO> findAllProductsBySale(Long id){
-        Sale sale = saleRepository.findById(id).orElseThrow(() -> new RuntimeException("Sale not found."));
+   public List<ProductDTO> findAllProductsBySale(Long saleId) {
+        Sale sale = saleRepository.findById(saleId).orElseThrow(() -> new RuntimeException("Sale not found"));
 
-        List<ProductDTO> productsBySale = clientProduct.findAllProductsBySale(id);
-
-        return productsBySale;
+        return clientProduct.getProductsByIds(sale.getProductIds());
     }
+
 
 }

@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.microservice_product.dto.ProductDTO;
 import com.microservice_product.model.Product;
 import com.microservice_product.service.ProductService;
 
@@ -93,9 +95,9 @@ public class ProductController {
 
 
     @GetMapping("Search-by-id/{id}")
-    public ResponseEntity<List<Product>> findAllProductsBySale(@PathVariable Long id){
-        List<Product> productsBySale = productService.findAllProductsBySale(id);
-        return ResponseEntity.ok(productsBySale);
+    public ResponseEntity<List<ProductDTO>> getProductsByIds(@RequestParam List<Long> ids) {
+        List<ProductDTO> products = productService.getProductsByIds(ids);
+        return ResponseEntity.ok(products);
     }
 
 }

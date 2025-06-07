@@ -32,7 +32,7 @@ public class Product {
     @Column(nullable = false)
     private float price;
 
-    private Long saleId;
+    
 
 
 }

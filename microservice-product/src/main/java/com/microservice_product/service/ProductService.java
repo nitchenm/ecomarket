@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.microservice_product.dto.ProductDTO;
 import com.microservice_product.model.Product;
 import com.microservice_product.repository.ProductRepository;
 
@@ -53,8 +54,16 @@ public class ProductService {
     }
 
 
-    public List<Product> findAllProductsBySale(Long id){
-        return productRepository.findBySaleId(id);
+   public List<ProductDTO> getProductsByIds(List<Long> ids) {
+        return productRepository.findAllById(ids).stream()
+            .map(p -> ProductDTO.builder()
+                    .id(p.getId())
+                    .name(p.getName())
+                    .quantity(p.getQuantity())
+                    .price(p.getPrice())
+                    .build())
+            .toList();
     }
+
 
 }
