@@ -1,3 +1,8 @@
+# Nombres Integrantes
+#### Nitchen Martinez
+#### Domingo Velazquez
+#### Areliz Isla
+
 # Ecomarket Microservices
 
 Este proyecto implementa una arquitectura de microservicios para la gestión de un e-commerce, incluyendo usuarios, ventas, productos y sucursales.
