@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.acopl.microservice_sale.dto.ProductDTO;
 
@@ -13,6 +13,6 @@ import com.acopl.microservice_sale.dto.ProductDTO;
 public interface ClientProduct {
 
     @GetMapping("api/v1/product/search-by-id/{id}")
-    List<ProductDTO> findAllProductsBySale(@PathVariable Long id);
+    List<ProductDTO> getProductsByIds(@RequestParam List<Long> ids);
 
 }

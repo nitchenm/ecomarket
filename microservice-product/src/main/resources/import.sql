@@ -1,0 +1,10 @@
+INSERT INTO product (id, name, quantity, price) VALUES (1, 'Detergente Natural', 40, 5250);
+INSERT INTO product (id, name, quantity, price) VALUES (2, 'Maceta Biodegradable', 23, 7500);
+INSERT INTO product (id, name, quantity, price) VALUES (3, 'Botella Reutilizable', 30, 3200);
+INSERT INTO product (id, name, quantity, price) VALUES (4, 'Esponja Vegetal', 20, 1250);
+INSERT INTO product (id, name, quantity, price) VALUES (5, 'Shampoo Solido', 35, 4350);
+INSERT INTO product (id, name, quantity, price) VALUES (6, 'Toalla de Bambú', 27, 2250);
+INSERT INTO product (id, name, quantity, price) VALUES (7, 'Vaso de Carton', 120, 300);
+INSERT INTO product (id, name, quantity, price) VALUES (8, 'Cesta de Lino', 45, 1300);
+INSERT INTO product (id, name, quantity, price) VALUES (9, 'Bombilla de Bambú', 340, 200);
+INSERT INTO product (id, name, quantity, price) VALUES (10, 'Pañal Biodegradable', 120, 1000);

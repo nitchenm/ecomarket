@@ -10,9 +10,13 @@ spring:
     password: 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
+    show-sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
+logging:
+  level:
+    org.springframework.boot.context.config: DEBUG
 
 eureka:
   instance:
