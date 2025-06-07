@@ -46,7 +46,8 @@
             "mainClass": "com.microservice_product.MicroserviceProductApplication",
             "projectName": "microservice-product",
             "args": "",
-            "envFile": "${workspaceFolder}/.env"
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=51177 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=microservice-product"
         },
         {
             "type": "java",
@@ -55,6 +56,17 @@
             "cwd": "${workspaceFolder}",
             "mainClass": "com.acopl.microservice_user.MicroserviceUserApplication",
             "projectName": "microservice-user",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env",
+            "vmArgs": " -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=51230 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dspring.jmx.enabled=true -Djava.rmi.server.hostname=localhost -Dspring.application.admin.enabled=true -Dspring.boot.project.name=microservice-user"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MicroserviceBranchApplication<microservice-branch>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.acopl.microservice_branch.MicroserviceBranchApplication",
+            "projectName": "microservice-branch",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
         }

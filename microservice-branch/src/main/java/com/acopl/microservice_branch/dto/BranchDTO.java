@@ -1,4 +1,4 @@
-package com.acopl.microservice_user.dto;
+package com.acopl.microservice_branch.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,12 +9,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-
-public class UserDTO {
+public class BranchDTO {
 
     private Long id;
     private String name;
-    private String email;
-    private String rol;
+    private String address;
+    private String city;
+    private String country;
 
 }

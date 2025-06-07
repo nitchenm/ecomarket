@@ -1,4 +1,4 @@
-package com.acopl.microservice_user.model;
+package com.acopl.microservice_branch.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,11 +10,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "users")
+@Table(name = "branches")
 @Data
 @NoArgsConstructor
-
-public class User {
+public class Branch {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +22,13 @@ public class User {
     @Column(nullable=false)
     private String name;
 
-    @Column(unique = true, nullable=false)
-    // evita duplicados en mail
-    private String email;
+    @Column(nullable=false)
+    private String address;
 
     @Column(nullable=false)
-    private String rol;
+    private String city;
+
+    @Column(nullable=false)
+    private String country;
 
 }
