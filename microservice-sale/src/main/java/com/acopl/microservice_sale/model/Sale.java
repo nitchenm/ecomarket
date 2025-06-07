@@ -32,9 +32,7 @@ public class Sale {
 
     private Long clientId;
 
-    
-    @Transient
-    private List<Long> productIds;
+    private Long productId;
 
 
 
