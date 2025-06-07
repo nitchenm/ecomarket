@@ -32,4 +32,5 @@ public class Sale {
 
     private Long productId;
 
+
 }

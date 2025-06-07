@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.acopl.microservice_sale.dto.ProductDTO;
 import com.acopl.microservice_sale.model.Sale;
 import com.acopl.microservice_sale.service.SaleService;
 
@@ -63,6 +64,13 @@ public class SaleController {
     public ResponseEntity<List<Sale>> findAllSaleByUser(@PathVariable Long id) {
         saleService.findAllSaleByUser(id);
         return ResponseEntity.ok().build();
+    }
+
+
+    @GetMapping("/search-products-by-id/{id}")
+    public ResponseEntity<List<ProductDTO>> findAllProductsBySale(@PathVariable Long id){
+        List<ProductDTO> productsBySale = saleService.findAllProductsBySale(id);
+        return ResponseEntity.ok(productsBySale);
     }
     
     

@@ -40,7 +40,7 @@ public class UserController {
     public ResponseEntity<User> saveUser(@RequestBody User newuser){
         User user = userService.save(newuser);
         //devuelve el titulo con el status de creado con el cuerpo del uuser creado
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newuser);
     }
 
     //  el cliente esta ingresando un id en la url y nosotros tenemos que responde con la
