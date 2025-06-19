@@ -88,5 +88,18 @@ public class SaleServiceTest {
         verify(saleRepository, times(1)).deleteById(id);
     }
 
+    @Test
+    public void testFindAllSaleByUser(){
+        Long idUser = (long)1;
+        when(saleRepository.findByClientId((long)1)).thenReturn(List.of(new Sale((long)1,new Date(),50,(long)1,(long)1)));
+        
+        List<Sale> saleList = saleService.findAllSaleByUser(idUser);
+
+        assertNotNull(saleList);
+
+        assertEquals(idUser, saleList.get(0).getClientId());
+        
+    }
+
 
 }
