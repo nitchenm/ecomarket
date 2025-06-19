@@ -1,6 +1,6 @@
 package com.microservice_product;
 
-import java.util.Date;
+
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
