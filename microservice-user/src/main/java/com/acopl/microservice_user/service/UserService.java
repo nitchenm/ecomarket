@@ -59,10 +59,12 @@ public class UserService {
 
 
     public boolean authenticateById(Long id, String email, String rol) {
-    return userRepository.findById(id)
-            .map(user ->
-                user.getEmail().equals(email) && user.getRol().equals(rol)
-            ).orElse(false);
+        return userRepository.findById(id)
+                .map(user ->
+                    email != null && rol != null &&
+                    java.util.Objects.equals(user.getEmail(), email) &&
+                    java.util.Objects.equals(user.getRol(), rol)
+                ).orElse(false);
     }
 
     public List<SaleDTO> findAllSaleByUser(Long id){
