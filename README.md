@@ -10,10 +10,15 @@ Este proyecto implementa una arquitectura de microservicios para la gestión de 
 Usamos los microservicios con nombres en ingles para respetar la notación y...
 aprender inglés(?)
 
-## Base de Datos
+## Base de Datos DEV
 
 ```sql
 CREATE DATABASE ecomarketdtbs;
+```
+
+## Base de Datos TEST
+```sql
+CREATE DATABASE ecomarketdtbs_test;
 ```
 
 ## Microservicios y Endpoints
