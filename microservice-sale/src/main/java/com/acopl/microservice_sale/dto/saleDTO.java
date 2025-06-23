@@ -10,4 +10,6 @@ public class saleDTO {
     private Date dateTime;
     private float total;
     private Long clientID;
+    private Long productID;
+
 }

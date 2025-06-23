@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.acopl.microservice_sale.client.ClientProduct;
 import com.acopl.microservice_sale.dto.ProductDTO;
+import com.acopl.microservice_sale.dto.saleDTO;
 import com.acopl.microservice_sale.model.Sale;
 import com.acopl.microservice_sale.repository.ISaleRepository;
 
@@ -24,12 +25,42 @@ public class SaleService {
         return saleRepository.findAll();
     }
 
-    public Sale findById(Long id){
-        return saleRepository.findById(id).orElseThrow(()-> new RuntimeException("Sale not found"));
+    public saleDTO findById(Long id){
+        Sale newSale = saleRepository.findById(id).orElseThrow(()-> new RuntimeException("Sale not found"));
+
+        saleDTO newSaleDTO = new saleDTO();
+
+        newSaleDTO.setClientID(newSale.getClientId());
+        newSaleDTO.setDateTime(newSale.getDateTime());
+        newSaleDTO.setTotal(newSale.getTotal());
+        newSaleDTO.setId(newSale.getId());
+        newSaleDTO.setProductID(newSale.getProductId());
+
+
+        return newSaleDTO;
+
     }
     
-    public Sale saveSale(Sale sale){
-        return saleRepository.save(sale);
+    public saleDTO saveSale(saleDTO saleDTO){
+        Sale newSale = new Sale();
+
+        newSale.setClientId(saleDTO.getClientID());
+        newSale.setDateTime(saleDTO.getDateTime());
+        newSale.setId(saleDTO.getId());
+        newSale.setProductId(saleDTO.getProductID());
+        newSale.setTotal(saleDTO.getTotal());
+
+        Sale savedSale = saleRepository.save(newSale);
+
+        saleDTO returningSale = new saleDTO();
+
+        returningSale.setClientID(savedSale.getClientId());
+        returningSale.setDateTime(savedSale.getDateTime());
+        returningSale.setId(savedSale.getId());
+        returningSale.setProductID(savedSale.getProductId());
+        returningSale.setTotal(savedSale.getTotal());
+
+        return returningSale;
     }
 
     public void deleteSale(Long id){
