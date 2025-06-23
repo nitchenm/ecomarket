@@ -1,26 +1,25 @@
 package com.acopl.microservice_sale;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.acopl.microservice_sale.dto.saleDTO;
 import com.acopl.microservice_sale.model.Sale;
 import com.acopl.microservice_sale.repository.ISaleRepository;
 import com.acopl.microservice_sale.service.SaleService;
-
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 
 @ExtendWith(MockitoExtension.class)
 public class SaleServiceTest {
@@ -56,7 +55,7 @@ public class SaleServiceTest {
         when(saleRepository.findById(id)).thenReturn(Optional.of(sale));
 
         //Llamo a mi service con el id 1 que defini anteriormente
-        Sale saleFound = saleService.findById(id);
+        saleDTO saleFound = saleService.findById(id);
 
         //Verifico que no sea nulo
         assertNotNull(saleFound);
@@ -67,11 +66,21 @@ public class SaleServiceTest {
 
     @Test
     public void testSave(){
-        Sale sale = new Sale((long)1, new Date(), 50, (long)1, (long)1);
-
-        when(saleRepository.save(sale)).thenReturn(sale);
-
-        Sale savedSale = saleService.saveSale(sale);
+        //(long)1, new Date(), 50, (long)1, (long)1
+        Sale newSale = new Sale();
+        
+        when(saleRepository.save(newSale)).thenReturn(newSale);
+        
+        
+        
+        saleDTO sale = new saleDTO();
+        sale.setClientID(1l);
+        sale.setDateTime(new Date());
+        sale.setProductID(1L);
+        sale.setTotal(10);
+        sale.setId(1L);
+        
+        saleDTO savedSale = saleService.saveSale(sale);
 
         assertNotNull(savedSale);
         assertEquals(1, savedSale.getId());
@@ -98,6 +107,13 @@ public class SaleServiceTest {
         assertNotNull(saleList);
 
         assertEquals(idUser, saleList.get(0).getClientId());
+        
+    }
+
+    @Test
+    public void testFindAllProductBySale(){
+        Sale sale = new Sale((long)1, new Date(), 50, (long)1, (long)1);
+
         
     }
 

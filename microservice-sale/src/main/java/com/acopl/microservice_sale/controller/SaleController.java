@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.acopl.microservice_sale.dto.ProductDTO;
+import com.acopl.microservice_sale.dto.saleDTO;
 import com.acopl.microservice_sale.model.Sale;
 import com.acopl.microservice_sale.service.SaleService;
 
@@ -28,15 +29,15 @@ public class SaleController {
     private SaleService saleService;
 
     @PostMapping("/create")
-    public ResponseEntity<Sale> saveSale(@RequestBody Sale sale) {
-        Sale newSale = saleService.saveSale(sale);
+    public ResponseEntity<saleDTO> saveSale(@RequestBody saleDTO sale) {
+        saleDTO newSale = saleService.saveSale(sale);
         return ResponseEntity.status(HttpStatus.CREATED).body(newSale);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Sale> findById(@PathVariable Long id) {
+    public ResponseEntity<saleDTO> findById(@PathVariable Long id) {
         try {
-            Sale saleFound = saleService.findById(id);
+            saleDTO saleFound = saleService.findById(id);
             return ResponseEntity.ok(saleFound);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
