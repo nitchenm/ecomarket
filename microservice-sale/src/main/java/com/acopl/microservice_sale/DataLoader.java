@@ -1,6 +1,8 @@
 package com.acopl.microservice_sale;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ public class DataLoader implements CommandLineRunner{
     public void run(String... args) throws Exception{
         Faker faker = new Faker();
         Random random = new Random();
+        List<Sale> sales = new ArrayList<>();
         
         for (Long i = (long) 0; i< 3 ; i++){
             Sale sale = new Sale();
@@ -31,6 +34,8 @@ public class DataLoader implements CommandLineRunner{
             sale.setProductId(i+1);
             sale.setTotal(i+200);
             sale.setDateTime(new Date());
+            sales.add(sale);
         }
+        saleRepository.saveAll(sales);
     }
 }

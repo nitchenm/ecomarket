@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.acopl.microservice_sale.dto.ProductDTO;
-import com.acopl.microservice_sale.dto.saleDTO;
-import com.acopl.microservice_sale.model.Sale;
+import com.acopl.microservice_sale.dto.SaleDTO;
 import com.acopl.microservice_sale.service.SaleService;
 
 
@@ -29,15 +28,15 @@ public class SaleController {
     private SaleService saleService;
 
     @PostMapping("/create")
-    public ResponseEntity<saleDTO> saveSale(@RequestBody saleDTO sale) {
-        saleDTO newSale = saleService.saveSale(sale);
+    public ResponseEntity<SaleDTO> saveSale(@RequestBody SaleDTO sale) {
+        SaleDTO newSale = saleService.saveSale(sale);
         return ResponseEntity.status(HttpStatus.CREATED).body(newSale);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<saleDTO> findById(@PathVariable Long id) {
+    public ResponseEntity<SaleDTO> findById(@PathVariable Long id) {
         try {
-            saleDTO saleFound = saleService.findById(id);
+            SaleDTO saleFound = saleService.findById(id);
             return ResponseEntity.ok(saleFound);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -45,8 +44,8 @@ public class SaleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Sale>> findAllSales() {
-        List<Sale> saleList = saleService.findAllSales();
+    public ResponseEntity<List<SaleDTO>> findAllSales() {
+        List<SaleDTO> saleList = saleService.findAllSales();
         return saleList.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(saleList);
     }
     
@@ -62,7 +61,7 @@ public class SaleController {
     }
 
     @GetMapping("/search-by-id/{id}")
-    public ResponseEntity<List<Sale>> findAllSaleByUser(@PathVariable Long id) {
+    public ResponseEntity<List<SaleDTO>> findAllSaleByUser(@PathVariable Long id) {
         saleService.findAllSaleByUser(id);
         return ResponseEntity.ok().build();
     }
