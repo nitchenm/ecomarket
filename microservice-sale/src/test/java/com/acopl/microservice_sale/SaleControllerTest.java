@@ -1,6 +1,8 @@
 package com.acopl.microservice_sale;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
@@ -71,6 +73,27 @@ public class SaleControllerTest {
                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                .andExpect(jsonPath("$.id").value("1"));
                
+    }
+
+    @Test
+    public void findAllSaleControllerTest()throws JsonProcessingException, Exception{
+        String uri = "/api/v1/sale";
+        List<SaleDTO> saleList = new ArrayList<>();
+        SaleDTO saleDTO = new SaleDTO();
+        saleDTO.setClientID(1L);
+        saleDTO.setProductID(1L);
+        saleDTO.setTotal(1999.98F);
+        saleDTO.setDateTime(new Date());
+        saleDTO.setId(1L);
+
+        saleList.add(saleDTO);
+
+        when(saleService.findAllSales()).thenReturn(saleList);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(uri)
+               .accept(MediaType.APPLICATION_JSON))
+               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk());
     }
 
     

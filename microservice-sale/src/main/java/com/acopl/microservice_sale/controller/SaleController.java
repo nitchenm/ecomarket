@@ -45,8 +45,14 @@ public class SaleController {
 
     @GetMapping
     public ResponseEntity<List<SaleDTO>> findAllSales() {
-        List<SaleDTO> saleList = saleService.findAllSales();
-        return saleList.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(saleList);
+        try {
+            List<SaleDTO> saleList = saleService.findAllSales();
+            return saleList.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(saleList);
+     
+        } catch (Exception e) {
+            return ResponseEntity.noContent().build();
+        }
+        
     }
     
 
