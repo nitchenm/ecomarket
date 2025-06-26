@@ -20,5 +20,6 @@ class MicroserviceUserApplicationTests {
 	@Test
     void mainRunsWithoutExceptions() {
         MicroserviceUserApplication.main(new String[] {});
+		
     }
 }
