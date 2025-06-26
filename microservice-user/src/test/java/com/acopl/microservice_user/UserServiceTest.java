@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.acopl.microservice_user.client.clientSale;
 import com.acopl.microservice_user.dto.SaleDTO;
+import com.acopl.microservice_user.dto.UserDTO;
 import com.acopl.microservice_user.model.User;
 import com.acopl.microservice_user.repository.UserRepository;
 import com.acopl.microservice_user.service.UserService;
@@ -39,7 +40,7 @@ public class UserServiceTest {
 
     private User user;
 
-    // IMPORTANTE DOCUEMNTAR TODO ESTO PARA QUE NO SE ME OLVIDE DESPUESSSS
+    // IMPORTANTE DOCUEMNTAR
     @BeforeEach
     void setUp() {
         user = new User();
@@ -49,6 +50,84 @@ public class UserServiceTest {
         user.setRol("USER");
     }
 
+    //////// PARA EL METODO saveUser
+    @Test
+    void testSaveUser() {
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(1L);
+        userDTO.setName("Test User");
+        userDTO.setEmail("test@duocuc.cl");
+        userDTO.setRol("USER");
+
+        User savedUser = new User();
+        savedUser.setId(1L);
+        savedUser.setName("Test User");
+        savedUser.setEmail("test@duocuc.cl");
+        savedUser.setRol("USER");
+
+        when(userRepository.save(any(User.class))).thenReturn(savedUser);
+
+        UserDTO result = userService.saveUser(userDTO);
+
+        assertNotNull(result);
+        assertEquals(userDTO.getId(), result.getId());
+        assertEquals(userDTO.getName(), result.getName());
+        assertEquals(userDTO.getEmail(), result.getEmail());
+        assertEquals(userDTO.getRol(), result.getRol());
+    }
+
+
+
+    //////// PARA EL METODO updateUser
+    @Test
+    void testUpdateUser() {
+        UserDTO updatedUserDTO = new UserDTO();
+        updatedUserDTO.setName("Updated User");
+        updatedUserDTO.setEmail("updated@duocuc.cl");
+        updatedUserDTO.setRol("ADMIN");
+
+        User existingUser = new User();
+        existingUser.setId(1L);
+        existingUser.setName("Test User");
+        existingUser.setEmail("test@duocuc.cl");
+        existingUser.setRol("USER");
+
+        User updatedUser = new User();
+        updatedUser.setId(1L);
+        updatedUser.setName("Updated User");
+        updatedUser.setEmail("updated@duocuc.cl");
+        updatedUser.setRol("ADMIN");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(updatedUser);
+
+        UserDTO result = userService.updateUser(1L, updatedUserDTO);
+
+        assertNotNull(result);
+        assertEquals(updatedUserDTO.getName(), result.getName());
+        assertEquals(updatedUserDTO.getEmail(), result.getEmail());
+        assertEquals(updatedUserDTO.getRol(), result.getRol());
+    }
+
+    //////// PARA EL METODO findById
+    @Test
+    void testFindById() {
+        User user = new User();
+        user.setId(1L);
+        user.setName("Test User");
+        user.setEmail("test@duocuc.cl");
+        user.setRol("USER");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        UserDTO result = userService.findById(1L);
+
+        assertNotNull(result);
+        assertEquals(user.getId(), result.getId());
+        assertEquals(user.getName(), result.getName());
+        assertEquals(user.getEmail(), result.getEmail());
+        assertEquals(user.getRol(), result.getRol());
+    }
     //////// PARA EL METODO findall
     @Test
     void testFindAll() {
@@ -58,14 +137,6 @@ public class UserServiceTest {
         assertEquals(1, users.size());
     }
 
-    //////// PARA EL METODO save 
-    @Test
-    void testSave() {
-        when(userRepository.save(user)).thenReturn(user);
-        User saved = userService.save(user);
-        assertNotNull(saved);
-        assertEquals("Test User", saved.getName());
-    }
 
     //////// PARA EL METODO deleteById 
     @Test
@@ -75,24 +146,6 @@ public class UserServiceTest {
         verify(userRepository, times(1)).deleteById(1L);
     }
 
-    //////// PARA EL METODO updateUser //////////
-    @Test
-    void testUpdateUser() {
-        User updated = new User();
-        updated.setName("Nuevo nombre");
-        updated.setEmail("otromaild@duocuc.cl");
-        updated.setRol("ADMIN");
-
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
-        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
-
-        User result = userService.updateUser(1L, updated);
-
-        assertEquals("Nuevo nombre", result.getName());
-        assertEquals("otromaild@duocuc.cl", result.getEmail());
-        assertEquals("ADMIN", result.getRol());
-        verify(userRepository).save(any(User.class));
-    }
 
 
     //////// PARA EL METEDO authenticateById //////////

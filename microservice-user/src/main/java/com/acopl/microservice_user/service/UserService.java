@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.acopl.microservice_user.client.clientSale;
 import com.acopl.microservice_user.dto.SaleDTO;
+import com.acopl.microservice_user.dto.UserDTO;
 import com.acopl.microservice_user.model.User;
 import com.acopl.microservice_user.repository.UserRepository;
 
@@ -28,14 +29,43 @@ public class UserService {
     }
 
     //obtiene un user por su id
-    public User findById(Long id){
-        return userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found"));
+    // DOCUMENTAR POR EL NUEVO DTO
+    public UserDTO findById(Long id){
+
+        User userSearched = userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found"));
+
+        UserDTO userFound = new UserDTO();
+
+        userFound.setId(userSearched.getId());
+        userFound.setName(userSearched.getName());
+        userFound.setEmail(userSearched.getEmail());
+        userFound.setRol(userSearched.getRol());
+
+        return userFound;
+        //return userRepository.findById(id).orElseThrow(()-> new RuntimeException("User not found"));
     }
 
     //guarda un usuario
-    public User save(User user){
+    public UserDTO saveUser(UserDTO userDTO){
         //¿Esto se podrá mejorar? ¿Manejo de errores?
-        return userRepository.save(user);
+        //DOCUMENTAR ESTA NUEVA FORMA DE REFACTORIZACION PARA ENTENDERLO
+        User newUser = new User();
+
+        newUser.setId(userDTO.getId());
+        newUser.setName(userDTO.getName());
+        newUser.setEmail(userDTO.getEmail());
+        newUser.setRol(userDTO.getRol());
+
+        User savedUser = userRepository.save(newUser);
+
+        UserDTO returningUser = new UserDTO();
+
+        returningUser.setId(savedUser.getId());
+        returningUser.setName(savedUser.getName());
+        returningUser.setEmail(savedUser.getEmail());
+        returningUser.setRol(savedUser.getRol());
+
+        return returningUser;
     }
 
     //recuerda, es un void porque no necesitamos que retorne algo cuando
@@ -47,14 +77,27 @@ public class UserService {
     }
 
     //se actualiza usuario
-    public User updateUser(Long id, User updatedUser){
-        User existingUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    // se documenta la nuyeva implementación del userdto
+    // el userdto es un objeto simplificado que sirve para
+    // enviar y recibir datos sin exponer la entidad completa
+    public UserDTO updateUser(Long id, UserDTO updatedUser){
         
-        existingUser.setName(updatedUser.getName());
-        existingUser.setEmail(updatedUser.getEmail());
-        existingUser.setRol(updatedUser.getRol());
+        User UserToUpdate = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        
+        UserToUpdate.setName(updatedUser.getName());
+        UserToUpdate.setEmail(updatedUser.getEmail());
+        UserToUpdate.setRol(updatedUser.getRol());
 
-        return userRepository.save(existingUser);
+        User savedUser = userRepository.save(UserToUpdate);
+
+        UserDTO returningUser = new UserDTO();
+
+        returningUser.setId(savedUser.getId());
+        returningUser.setName(savedUser.getName());
+        returningUser.setEmail(savedUser.getEmail());
+        returningUser.setRol(savedUser.getRol());
+
+        return returningUser;
     }
 
 
@@ -67,7 +110,9 @@ public class UserService {
                 ).orElse(false);
     }
 
+
     public List<SaleDTO> findAllSaleByUser(Long id){
+
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
 
         List<SaleDTO> saleDTOList = clientSale.findAllSaleByUser(id);
