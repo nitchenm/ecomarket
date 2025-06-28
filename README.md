@@ -19,6 +19,8 @@ CREATE DATABASE ecomarketdtbs;
 ## Base de Datos TEST
 ```sql
 CREATE DATABASE ecomarketdtbs_test;
+--y solo por si acaso
+ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 ```
 
 ## Microservicios y Endpoints

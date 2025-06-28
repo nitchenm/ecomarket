@@ -1,29 +1,26 @@
 package com.acopl.microservice_user;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
-
 import com.acopl.microservice_user.controller.UserController;
 import com.acopl.microservice_user.dto.SaleDTO;
 import com.acopl.microservice_user.dto.UserDTO;
-import com.acopl.microservice_user.model.User;
 import com.acopl.microservice_user.service.UserService;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 class UserControllerTest {
 
     @Mock
@@ -32,37 +29,34 @@ class UserControllerTest {
     @InjectMocks
     private UserController userController;
 
-    private User user;
     private UserDTO userDTO;
+    private SaleDTO saleDTO;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        user = new User();
-        user.setId(1L);
-        user.setName("Test User");
-        user.setEmail("test@duocuc.cl");
-        user.setRol("USER");
-
         userDTO = new UserDTO();
         userDTO.setId(1L);
         userDTO.setName("Test User");
         userDTO.setEmail("test@duocuc.cl");
         userDTO.setRol("USER");
+
+        saleDTO = new SaleDTO();
+        // set fields of saleDTO if needed
     }
 
     @Test
     void testListAllUsers_withUsers() {
-        when(userService.findall()).thenReturn(List.of(user));
-        ResponseEntity<List<User>> response = userController.listAllUsers();
+        when(userService.findall()).thenReturn(List.of(userDTO));
+        ResponseEntity<List<UserDTO>> response = userController.listAllUsers();
         assertEquals(200, response.getStatusCode().value());
+        assertNotNull(response.getBody());
         assertFalse(response.getBody().isEmpty());
     }
 
     @Test
     void testListAllUsers_noUsers() {
         when(userService.findall()).thenReturn(List.of());
-        ResponseEntity<List<User>> response = userController.listAllUsers();
+        ResponseEntity<List<UserDTO>> response = userController.listAllUsers();
         assertEquals(204, response.getStatusCode().value());
     }
 
@@ -135,10 +129,30 @@ class UserControllerTest {
         assertEquals("Invalid credentials", response.getBody());
     }
 
+    // --- TESTS PARA EL MÉTODO DE VENTAS POR USUARIO ---
+
     @Test
-    void testFindAllSaleByUser() {
-        when(userService.findAllSaleByUser(1L)).thenReturn(List.of(new SaleDTO()));
+    void testFindAllSaleByUser_success() {
+        when(userService.findAllSaleByUser(1L)).thenReturn(List.of(saleDTO));
         ResponseEntity<List<SaleDTO>> response = userController.findAllSaleByUser(1L);
         assertEquals(200, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertFalse(response.getBody().isEmpty());
+    }
+
+    @Test
+    void testFindAllSaleByUser_emptyList() {
+        when(userService.findAllSaleByUser(1L)).thenReturn(List.of());
+        ResponseEntity<List<SaleDTO>> response = userController.findAllSaleByUser(1L);
+        assertEquals(200, response.getStatusCode().value());
+        assertNotNull(response.getBody());
+        assertTrue(response.getBody().isEmpty());
+    }
+
+    @Test
+    void testFindAllSaleByUser_notFound() {
+        when(userService.findAllSaleByUser(2L)).thenThrow(new RuntimeException());
+        ResponseEntity<List<SaleDTO>> response = userController.findAllSaleByUser(2L);
+        assertEquals(404, response.getStatusCode().value());
     }
 }

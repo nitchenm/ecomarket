@@ -11,7 +11,7 @@ import com.acopl.microservice_user.repository.UserRepository;
 
 import net.datafaker.Faker;
 
-@Profile("dev")
+@Profile("test")
 @Component
 public class DataLoader implements CommandLineRunner{
     @Autowired
@@ -21,7 +21,7 @@ public class DataLoader implements CommandLineRunner{
     public void run(String... args) throws Exception {
         Faker faker = new Faker();
     
-        for(Long i = (long) 0; i < 3; i++){
+        for(Long i = (long) 0; i < 10; i++){
             String firstName = faker.name().firstName();
             String fullName = faker.name().fullName();
     

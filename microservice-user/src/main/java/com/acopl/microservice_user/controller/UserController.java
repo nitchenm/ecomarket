@@ -31,10 +31,11 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<User>> listAllUsers(){
-        List<User> users = userService.findall();
-        return users.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(users);
-
+    public ResponseEntity<List<UserDTO>> listAllUsers() {
+        List<UserDTO> users = userService.findall();
+        return users.isEmpty()
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(users);
     }
 
     //  el cliente esta ingresando un id en la url y nosotros tenemos que responde con la

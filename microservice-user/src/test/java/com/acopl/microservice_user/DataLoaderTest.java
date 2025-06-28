@@ -27,7 +27,8 @@ class DataLoaderTest {
 
         dataLoader.run();
 
-        // Verifica que se hayan guardado 3 usuarios
-        verify(userRepository, times(3)).save(any(User.class));
+        // esto verifica que el método save de userRepository se haya llamado 10 veces
+        // ya que en el DataLoader se crean 10 usuarios
+        verify(userRepository, times(10)).save(any(User.class));
     }
 }
