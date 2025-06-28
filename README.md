@@ -62,3 +62,14 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 ---
 ![Ecomarket drawio](https://github.com/user-attachments/assets/0c0f2a14-3ab4-487c-809f-272082edeb09)
 
+
+## Para pruebas en maven
+
+- `microservice-branch`: mvn install -pl microservice-branch || mvn install -pl microservice-branch -am -DskipTests
+- `microservice-user`: mvn install -pl microservice-user || mvn install -pl microservice-user -am -DskipTests
+
+## Ruta definida para cada microservicio
+
+- **Sucursales**
+  - URL: [http://localhost:8070/doc/swagger-ui/index.html](http://localhost:8070/doc/swagger-ui/index.html)
+

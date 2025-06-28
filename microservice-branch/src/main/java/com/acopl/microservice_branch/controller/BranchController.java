@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.acopl.microservice_branch.assembler.BranchModelAssembler;
 import com.acopl.microservice_branch.dto.BranchDTO;
 import com.acopl.microservice_branch.service.BranchService;
 
@@ -26,6 +27,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 @RestController
 @RequestMapping("/api/v1/branches")
 @Tag(name = "Sucursales", description = "Operaciones relacionadas con las sucursales")
@@ -34,15 +40,28 @@ public class BranchController {
     @Autowired
     private BranchService branchService;
 
+    @Autowired
+    private BranchModelAssembler assembler;
+
     @GetMapping
     @Operation(summary = "Listar todas las sucursales", description = "Obtiene una lista de todas las sucursales registradas.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Lista de sucursales encontrada"),
         @ApiResponse(responseCode = "204", description = "No hay sucursales registradas")
     })
-    public ResponseEntity<List<BranchDTO>> listAllBranches() {
+    public ResponseEntity<CollectionModel<EntityModel<BranchDTO>>> listAllBranches() {
         List<BranchDTO> branches = branchService.findAll();
-        return branches.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(branches);
+        if (branches.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        List<EntityModel<BranchDTO>> branchModels = branches.stream()
+            .map(assembler::toModel)
+            .toList();
+        return ResponseEntity.ok(
+            CollectionModel.of(branchModels,
+                linkTo(methodOn(BranchController.class).listAllBranches()).withSelfRel()
+            )
+        );
     }
 
     @PostMapping
@@ -78,12 +97,12 @@ public class BranchController {
         @ApiResponse(responseCode = "200", description = "Sucursal encontrada"),
         @ApiResponse(responseCode = "404", description = "Sucursal no encontrada")
     })
-    public ResponseEntity<BranchDTO> findById(
+    public ResponseEntity<EntityModel<BranchDTO>> findById(
         @Parameter(description = "Código de la sucursal", required = true)
         @PathVariable Long id) {
         try {
             BranchDTO branch = branchService.findById(id);
-            return ResponseEntity.ok(branch);
+            return ResponseEntity.ok(assembler.toModel(branch));
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
