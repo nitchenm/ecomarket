@@ -1,7 +1,6 @@
 package com.microservice_product;
 
 
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,7 +22,7 @@ public class DataLoader implements CommandLineRunner{
     @Override
     public void run(String... args) throws Exception{
         Faker faker = new Faker();
-        Random random = new Random();
+        //Random random = new Random();
 
         
         //Generamos la data falsa de product
