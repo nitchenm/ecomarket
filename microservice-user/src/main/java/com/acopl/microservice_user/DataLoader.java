@@ -11,7 +11,7 @@ import com.acopl.microservice_user.repository.UserRepository;
 
 import net.datafaker.Faker;
 
-@Profile("test")
+@Profile("dev")
 @Component
 public class DataLoader implements CommandLineRunner{
     @Autowired
