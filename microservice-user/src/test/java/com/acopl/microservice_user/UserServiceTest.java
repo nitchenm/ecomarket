@@ -6,6 +6,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +43,7 @@ public class UserServiceTest {
 
     private User user;
 
-    // IMPORTANTE DOCUEMNTAR
+    @SuppressWarnings("unused")
     @BeforeEach
     void setUp() {
         user = new User();
@@ -111,15 +112,8 @@ public class UserServiceTest {
         assertEquals(updatedUserDTO.getRol(), result.getRol());
     }
 
-    //////// PARA EL METODO findById
     @Test
     void testFindById() {
-        User user = new User();
-        user.setId(1L);
-        user.setName("Test User");
-        user.setEmail("test@duocuc.cl");
-        user.setRol("USER");
-
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         UserDTO result = userService.findById(1L);
@@ -130,11 +124,12 @@ public class UserServiceTest {
         assertEquals(user.getEmail(), result.getEmail());
         assertEquals(user.getRol(), result.getRol());
     }
+
     //////// PARA EL METODO findall
     @Test
     void testFindAll() {
         when(userRepository.findAll()).thenReturn(List.of(user));
-        List<User> users = userService.findall();
+        List<UserDTO> users = userService.findall();
         assertNotNull(users);
         assertEquals(1, users.size());
     }
@@ -229,4 +224,53 @@ public class UserServiceTest {
         assertEquals(1, result.size());
     }
 
+    @Test
+    void testUpdateUser_userNotFound() {
+        UserDTO updatedUserDTO = new UserDTO();
+        updatedUserDTO.setName("Updated User");
+        updatedUserDTO.setEmail("updated@duocuc.cl");
+        updatedUserDTO.setRol("ADMIN");
+
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.updateUser(99L, updatedUserDTO);
+        });
+
+        assertEquals("User not found with id: 99", exception.getMessage());
+    }
+
+    @Test
+    void testFindById_userNotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.findById(99L);
+        });
+
+        assertEquals("User not found", exception.getMessage());
+    }
+
+    @Test
+    void testAuthenticateById_invalidCredentials() {
+        User user = new User();
+        user.setId(1L);
+        user.setEmail("test@duocuc.cl");
+        user.setRol("USER");
+        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+
+        boolean result = userService.authenticateById(1L, "wrong@duocuc.cl", "ADMIN");
+        assertFalse(result);
+    }
+
+    @Test
+    void testFindAllSaleByUser_userNotFound() {
+        when(userRepository.findById(99L)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            userService.findAllSaleByUser(99L);
+        });
+
+        assertEquals("User not found.", exception.getMessage());
+    }
 }

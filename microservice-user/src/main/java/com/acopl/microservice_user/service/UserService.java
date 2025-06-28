@@ -24,8 +24,20 @@ public class UserService {
     private clientSale clientSale;
 
     //obtiene todos los usuarios
-    public List<User> findall() {
-        return userRepository.findAll();
+    public List<UserDTO> findall() {
+        List<User> users = userRepository.findAll();
+        return users.stream().map(this::convertToDTO).toList();
+    }
+
+    // Método auxiliar para convertir User a UserDTO
+    private UserDTO convertToDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setRol(user.getRol());
+        // agrega más campos si es necesario
+        return dto;
     }
 
     //obtiene un user por su id
@@ -111,6 +123,7 @@ public class UserService {
     }
 
 
+    @SuppressWarnings("unused")
     public List<SaleDTO> findAllSaleByUser(Long id){
 
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found."));
