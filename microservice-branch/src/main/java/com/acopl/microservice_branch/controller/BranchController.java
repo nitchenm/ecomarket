@@ -17,27 +17,48 @@ import org.springframework.web.bind.annotation.RestController;
 import com.acopl.microservice_branch.dto.BranchDTO;
 import com.acopl.microservice_branch.service.BranchService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/branches")
+@Tag(name = "Sucursales", description = "Operaciones relacionadas con las sucursales")
 public class BranchController {
 
     @Autowired
     private BranchService branchService;
 
     @GetMapping
+    @Operation(summary = "Listar todas las sucursales", description = "Obtiene una lista de todas las sucursales registradas.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de sucursales encontrada"),
+        @ApiResponse(responseCode = "204", description = "No hay sucursales registradas")
+    })
     public ResponseEntity<List<BranchDTO>> listAllBranches() {
         List<BranchDTO> branches = branchService.findAll();
         return branches.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(branches);
     }
 
     @PostMapping
+    @Operation(summary = "Guardar una nueva sucursal", description = "Crea una nueva sucursal con la información proporcionada.")
+    @ApiResponse(responseCode = "201", description = "Sucursal creada exitosamente")
     public ResponseEntity<BranchDTO> saveBranch(@RequestBody BranchDTO newBranch) {
         BranchDTO branch = branchService.save(newBranch);
         return ResponseEntity.status(HttpStatus.CREATED).body(branch);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BranchDTO> findById(@PathVariable Long id) {
+    @Operation(summary = "Buscar sucursal por ID", description = "Obtiene los detalles de una sucursal específica por su ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sucursal encontrada"),
+        @ApiResponse(responseCode = "404", description = "Sucursal no encontrada")
+    })
+    public ResponseEntity<BranchDTO> findById(
+        @Parameter(description = "Código de la sucursal", required = true)
+        @PathVariable Long id) {
         try {
             BranchDTO branch = branchService.findById(id);
             return ResponseEntity.ok(branch);
@@ -46,8 +67,17 @@ public class BranchController {
         }
     }
 
+
     @PutMapping("/{id}")
-    public ResponseEntity<BranchDTO> updateBranch(@PathVariable Long id, @RequestBody BranchDTO branchDTO) {
+    @Operation(summary = "Actualizar sucursal", description = "Actualiza la información de una sucursal existente.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Sucursal actualizada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Sucursal no encontrada")
+    })
+    public ResponseEntity<BranchDTO> updateBranch(
+        @Parameter(description = "Código de la sucursal", required = true)
+        @PathVariable Long id,
+        @RequestBody BranchDTO branchDTO) {
         try {
             BranchDTO updatedBranch = branchService.updateBranch(id, branchDTO);
             return ResponseEntity.ok(updatedBranch);
@@ -57,7 +87,14 @@ public class BranchController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteBranch(@PathVariable Long id) {
+    @Operation(summary = "Eliminar sucursal", description = "Elimina una sucursal existente por su ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Sucursal eliminada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Sucursal no encontrada")
+    })
+    public ResponseEntity<Void> deleteBranch(
+        @Parameter(description = "Código de la sucursal", required = true)
+        @PathVariable Long id) {
         try {
             branchService.deleteById(id);
             return ResponseEntity.noContent().build();
