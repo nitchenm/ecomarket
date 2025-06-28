@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.acopl.microservice_user.dto.SaleDTO;
 import com.acopl.microservice_user.dto.UserDTO;
-import com.acopl.microservice_user.model.User;
 import com.acopl.microservice_user.service.UserService;
 
 

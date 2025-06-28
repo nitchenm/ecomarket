@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.acopl.microservice_branch.model.Branch;
+import com.acopl.microservice_branch.dto.BranchDTO;
 import com.acopl.microservice_branch.service.BranchService;
 
 @RestController
-//contiene la url
 @RequestMapping("/api/v1/branches")
 public class BranchController {
 
@@ -26,21 +25,21 @@ public class BranchController {
     private BranchService branchService;
 
     @GetMapping
-    public ResponseEntity<List<Branch>> listAllBranches() {
-        List<Branch> branches = branchService.findAll();
+    public ResponseEntity<List<BranchDTO>> listAllBranches() {
+        List<BranchDTO> branches = branchService.findAll();
         return branches.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(branches);
     }
 
     @PostMapping
-    public ResponseEntity<Branch> saveBranch(@RequestBody Branch newBranch) {
-        Branch branch = branchService.save(newBranch);
+    public ResponseEntity<BranchDTO> saveBranch(@RequestBody BranchDTO newBranch) {
+        BranchDTO branch = branchService.save(newBranch);
         return ResponseEntity.status(HttpStatus.CREATED).body(branch);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Branch> findById(@PathVariable Long id) {
+    public ResponseEntity<BranchDTO> findById(@PathVariable Long id) {
         try {
-            Branch branch = branchService.findById(id);
+            BranchDTO branch = branchService.findById(id);
             return ResponseEntity.ok(branch);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -48,9 +47,9 @@ public class BranchController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Branch> updateBranch(@PathVariable Long id, @RequestBody Branch branch) {
+    public ResponseEntity<BranchDTO> updateBranch(@PathVariable Long id, @RequestBody BranchDTO branchDTO) {
         try {
-            Branch updatedBranch = branchService.updateBranch(id, branch);
+            BranchDTO updatedBranch = branchService.updateBranch(id, branchDTO);
             return ResponseEntity.ok(updatedBranch);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
