@@ -1,23 +1,28 @@
 package com.acopl.microservice_user;
 
-import com.acopl.microservice_user.controller.UserController;
-import com.acopl.microservice_user.dto.SaleDTO;
-import com.acopl.microservice_user.dto.UserDTO;
-import com.acopl.microservice_user.service.UserService;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import com.acopl.microservice_user.controller.UserController;
+import com.acopl.microservice_user.dto.SaleDTO;
+import com.acopl.microservice_user.dto.UserDTO;
+import com.acopl.microservice_user.service.UserService;
 
 @ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
@@ -32,7 +37,9 @@ class UserControllerTest {
     private UserDTO userDTO;
     private SaleDTO saleDTO;
 
+    
     @BeforeEach
+    @SuppressWarnings("unused")
     void setUp() {
         userDTO = new UserDTO();
         userDTO.setId(1L);
@@ -41,9 +48,9 @@ class UserControllerTest {
         userDTO.setRol("USER");
 
         saleDTO = new SaleDTO();
-        // set fields of saleDTO if needed
     }
 
+    @SuppressWarnings("null")
     @Test
     void testListAllUsers_withUsers() {
         when(userService.findall()).thenReturn(List.of(userDTO));
@@ -131,6 +138,7 @@ class UserControllerTest {
 
     // --- TESTS PARA EL MÉTODO DE VENTAS POR USUARIO ---
 
+    @SuppressWarnings("null")
     @Test
     void testFindAllSaleByUser_success() {
         when(userService.findAllSaleByUser(1L)).thenReturn(List.of(saleDTO));
@@ -140,6 +148,7 @@ class UserControllerTest {
         assertFalse(response.getBody().isEmpty());
     }
 
+    @SuppressWarnings("null")
     @Test
     void testFindAllSaleByUser_emptyList() {
         when(userService.findAllSaleByUser(1L)).thenReturn(List.of());

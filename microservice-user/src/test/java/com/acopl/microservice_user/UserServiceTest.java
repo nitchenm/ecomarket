@@ -144,9 +144,7 @@ public class UserServiceTest {
     }
 
 
-
     //////// PARA EL METEDO authenticateById //////////
-    /// NO SACAR PORQUE ESTO HACE QUE LOGRE EL 100%
     @Test
     void testAuthenticateById_true() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));

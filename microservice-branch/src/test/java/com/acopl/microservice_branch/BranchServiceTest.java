@@ -7,18 +7,23 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
+import com.acopl.microservice_branch.dto.BranchDTO;
 import com.acopl.microservice_branch.model.Branch;
 import com.acopl.microservice_branch.repository.BranchRepository;
 import com.acopl.microservice_branch.service.BranchService;
 
+@ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 class BranchServiceTest {
 
     @Mock
@@ -31,7 +36,6 @@ class BranchServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         branch = new Branch();
         branch.setId(1L);
         branch.setName("Sucursal");
@@ -43,15 +47,16 @@ class BranchServiceTest {
     @Test
     void testFindAll() {
         when(branchRepository.findAll()).thenReturn(List.of(branch));
-        List<Branch> result = branchService.findAll();
+        List<BranchDTO> result = branchService.findAll();
         assertEquals(1, result.size());
+        assertEquals(branch.getName(), result.get(0).getName());
     }
 
     @Test
     void testFindById_found() {
         when(branchRepository.findById(1L)).thenReturn(Optional.of(branch));
-        Branch result = branchService.findById(1L);
-        assertEquals(branch, result);
+        BranchDTO result = branchService.findById(1L);
+        assertEquals(branch.getName(), result.getName());
     }
 
     @Test
@@ -62,9 +67,40 @@ class BranchServiceTest {
 
     @Test
     void testSave() {
-        when(branchRepository.save(branch)).thenReturn(branch);
-        Branch result = branchService.save(branch);
-        assertEquals(branch, result);
+        when(branchRepository.save(any(Branch.class))).thenReturn(branch);
+        BranchDTO dto = new BranchDTO();
+        dto.setName("Sucursal");
+        dto.setAddress("Calle 123");
+        dto.setCity("Ciudad");
+        dto.setCountry("País");
+        BranchDTO result = branchService.save(dto);
+        assertEquals(dto.getName(), result.getName());
+    }
+
+    @Test
+    void testUpdateBranch_success() {
+        BranchDTO dto = new BranchDTO();
+        dto.setName("Nueva");
+        dto.setAddress("Nueva Dir");
+        dto.setCity("Nueva Ciudad");
+        dto.setCountry("Nuevo País");
+
+        when(branchRepository.findById(1L)).thenReturn(Optional.of(branch));
+        when(branchRepository.save(any(Branch.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        BranchDTO result = branchService.updateBranch(1L, dto);
+
+        assertEquals("Nueva", result.getName());
+        assertEquals("Nueva Dir", result.getAddress());
+        assertEquals("Nueva Ciudad", result.getCity());
+        assertEquals("Nuevo País", result.getCountry());
+    }
+
+    @Test
+    void testUpdateBranch_notFound() {
+        when(branchRepository.findById(2L)).thenReturn(Optional.empty());
+        BranchDTO dto = new BranchDTO();
+        assertThrows(RuntimeException.class, () -> branchService.updateBranch(2L, dto));
     }
 
     @Test
@@ -79,31 +115,5 @@ class BranchServiceTest {
     void testDeleteById_notFound() {
         when(branchRepository.existsById(2L)).thenReturn(false);
         assertThrows(RuntimeException.class, () -> branchService.deleteById(2L));
-    }
-
-    @Test
-    void testUpdateBranch_success() {
-        Branch updated = new Branch();
-        updated.setName("Nueva");
-        updated.setAddress("Nueva Dir");
-        updated.setCity("Nueva Ciudad");
-        updated.setCountry("Nuevo País");
-
-        when(branchRepository.findById(1L)).thenReturn(Optional.of(branch));
-        when(branchRepository.save(any(Branch.class))).thenAnswer(inv -> inv.getArgument(0));
-
-        Branch result = branchService.updateBranch(1L, updated);
-
-        assertEquals("Nueva", result.getName());
-        assertEquals("Nueva Dir", result.getAddress());
-        assertEquals("Nueva Ciudad", result.getCity());
-        assertEquals("Nuevo País", result.getCountry());
-    }
-
-    @Test
-    void testUpdateBranch_notFound() {
-        when(branchRepository.findById(2L)).thenReturn(Optional.empty());
-        Branch updated = new Branch();
-        assertThrows(RuntimeException.class, () -> branchService.updateBranch(2L, updated));
     }
 }

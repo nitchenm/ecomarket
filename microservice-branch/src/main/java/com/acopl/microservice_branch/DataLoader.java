@@ -21,7 +21,7 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Faker faker = new Faker();
 
-        for(Long i = (long) 0; i < 3; i++) {
+        for(Long i = (long) 0; i < 10; i++) {
             Branch branch = new Branch();
             branch.setId(i+1);
             branch.setName(faker.company().name());
