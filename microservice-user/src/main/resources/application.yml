@@ -1,7 +1,0 @@
-server:
-  port: 8050
-spring:
-  application:
-    name: msvc-user
-  config:
-    import: optional:configserver:http://localhost:8888/

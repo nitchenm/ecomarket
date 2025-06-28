@@ -7,10 +7,12 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import org.mockito.MockitoAnnotations;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.acopl.microservice_user.model.User;
 import com.acopl.microservice_user.repository.UserRepository;
 
+@ActiveProfiles("test")
 class DataLoaderTest {
 
     @Mock

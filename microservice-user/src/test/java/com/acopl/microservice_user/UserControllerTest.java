@@ -12,6 +12,7 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.acopl.microservice_user.controller.UserController;
 import com.acopl.microservice_user.dto.SaleDTO;
@@ -22,6 +23,7 @@ import com.acopl.microservice_user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@ActiveProfiles("test")
 class UserControllerTest {
 
     @Mock

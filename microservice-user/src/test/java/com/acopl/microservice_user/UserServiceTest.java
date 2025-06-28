@@ -18,6 +18,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.acopl.microservice_user.client.clientSale;
 import com.acopl.microservice_user.dto.SaleDTO;
@@ -26,6 +27,7 @@ import com.acopl.microservice_user.model.User;
 import com.acopl.microservice_user.repository.UserRepository;
 import com.acopl.microservice_user.service.UserService;
 
+@ActiveProfiles("test")
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
