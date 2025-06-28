@@ -4,10 +4,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
@@ -18,8 +15,12 @@ import org.springframework.http.ResponseEntity;
 
 import com.acopl.microservice_user.controller.UserController;
 import com.acopl.microservice_user.dto.SaleDTO;
+import com.acopl.microservice_user.dto.UserDTO;
 import com.acopl.microservice_user.model.User;
 import com.acopl.microservice_user.service.UserService;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class UserControllerTest {
 
@@ -30,6 +31,7 @@ class UserControllerTest {
     private UserController userController;
 
     private User user;
+    private UserDTO userDTO;
 
     @BeforeEach
     void setUp() {
@@ -39,15 +41,19 @@ class UserControllerTest {
         user.setName("Test User");
         user.setEmail("test@duocuc.cl");
         user.setRol("USER");
-    }
 
-    /// DOCUEMTNAR LUEGO PARA QUE NO SE ME OLVIDE
+        userDTO = new UserDTO();
+        userDTO.setId(1L);
+        userDTO.setName("Test User");
+        userDTO.setEmail("test@duocuc.cl");
+        userDTO.setRol("USER");
+    }
 
     @Test
     void testListAllUsers_withUsers() {
         when(userService.findall()).thenReturn(List.of(user));
         ResponseEntity<List<User>> response = userController.listAllUsers();
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertFalse(response.getBody().isEmpty());
     }
 
@@ -55,66 +61,67 @@ class UserControllerTest {
     void testListAllUsers_noUsers() {
         when(userService.findall()).thenReturn(List.of());
         ResponseEntity<List<User>> response = userController.listAllUsers();
-        assertEquals(204, response.getStatusCodeValue());
-    }
-
-    @Test
-    void testSaveUser() {
-        when(userService.save(any(User.class))).thenReturn(user);
-        ResponseEntity<User> response = userController.saveUser(user);
-        assertEquals(201, response.getStatusCodeValue());
-        assertEquals(user, response.getBody());
+        assertEquals(204, response.getStatusCode().value());
     }
 
     @Test
     void testFindById_found() {
-        when(userService.findById(1L)).thenReturn(user);
-        ResponseEntity<User> response = userController.findById(1L);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(user, response.getBody());
+        when(userService.findById(1L)).thenReturn(userDTO);
+        ResponseEntity<UserDTO> response = userController.findById(1L);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(userDTO, response.getBody());
     }
 
     @Test
     void testFindById_notFound() {
         when(userService.findById(2L)).thenThrow(new RuntimeException());
-        ResponseEntity<User> response = userController.findById(2L);
-        assertEquals(404, response.getStatusCodeValue());
+        ResponseEntity<UserDTO> response = userController.findById(2L);
+        assertEquals(404, response.getStatusCode().value());
+    }
+
+    @Test
+    void testSaveUser() {
+        when(userService.saveUser(any(UserDTO.class))).thenReturn(userDTO);
+        ResponseEntity<UserDTO> response = userController.saveUser(userDTO);
+        assertEquals(201, response.getStatusCode().value());
+        assertEquals(userDTO, response.getBody());
     }
 
     @Test
     void testUpdateUser_found() {
-        when(userService.updateUser(eq(1L), any(User.class))).thenReturn(user);
-        ResponseEntity<User> response = userController.updateUser(1L, user);
-        assertEquals(200, response.getStatusCodeValue());
-        assertEquals(user, response.getBody());
+        when(userService.findById(1L)).thenReturn(userDTO);
+        when(userService.saveUser(any(UserDTO.class))).thenReturn(userDTO);
+        ResponseEntity<UserDTO> response = userController.updateUser(1L, userDTO);
+        assertEquals(200, response.getStatusCode().value());
+        assertEquals(userDTO, response.getBody());
     }
 
     @Test
     void testUpdateUser_notFound() {
-        when(userService.updateUser(eq(2L), any(User.class))).thenThrow(new RuntimeException());
-        ResponseEntity<User> response = userController.updateUser(2L, user);
-        assertEquals(404, response.getStatusCodeValue());
+        when(userService.findById(2L)).thenThrow(new RuntimeException());
+        ResponseEntity<UserDTO> response = userController.updateUser(2L, userDTO);
+        assertEquals(404, response.getStatusCode().value());
     }
 
     @Test
     void testDeleteUser_success() {
         doNothing().when(userService).deleteById(1L);
         ResponseEntity<Void> response = userController.deleteUser(1L);
-        assertEquals(204, response.getStatusCodeValue());
+        assertEquals(204, response.getStatusCode().value());
     }
 
     @Test
     void testDeleteUser_notFound() {
         doThrow(new RuntimeException()).when(userService).deleteById(2L);
         ResponseEntity<Void> response = userController.deleteUser(2L);
-        assertEquals(404, response.getStatusCodeValue());
+        assertEquals(404, response.getStatusCode().value());
     }
 
     @Test
     void testAuthenticateById_success() {
         when(userService.authenticateById(1L, "test@duocuc.cl", "USER")).thenReturn(true);
         ResponseEntity<String> response = userController.authenticateById(1L, "test@duocuc.cl", "USER");
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
         assertEquals("ID authentication successful", response.getBody());
     }
 
@@ -122,7 +129,7 @@ class UserControllerTest {
     void testAuthenticateById_invalid() {
         when(userService.authenticateById(1L, "wrong@duocuc.cl", "USER")).thenReturn(false);
         ResponseEntity<String> response = userController.authenticateById(1L, "wrong@duocuc.cl", "USER");
-        assertEquals(401, response.getStatusCodeValue());
+        assertEquals(401, response.getStatusCode().value());
         assertEquals("Invalid credentials", response.getBody());
     }
 
@@ -130,6 +137,6 @@ class UserControllerTest {
     void testFindAllSaleByUser() {
         when(userService.findAllSaleByUser(1L)).thenReturn(List.of(new SaleDTO()));
         ResponseEntity<List<SaleDTO>> response = userController.findAllSaleByUser(1L);
-        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(200, response.getStatusCode().value());
     }
 }

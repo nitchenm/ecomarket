@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.acopl.microservice_user.dto.SaleDTO;
+import com.acopl.microservice_user.dto.UserDTO;
 import com.acopl.microservice_user.model.User;
 import com.acopl.microservice_user.service.UserService;
 
@@ -36,19 +37,12 @@ public class UserController {
 
     }
 
-    @PostMapping
-    public ResponseEntity<User> saveUser(@RequestBody User newuser){
-        User user = userService.save(newuser);
-        //devuelve el titulo con el status de creado con el cuerpo del uuser creado
-        return ResponseEntity.status(HttpStatus.CREATED).body(newuser);
-    }
-
     //  el cliente esta ingresando un id en la url y nosotros tenemos que responde con la
     // informacion del id que tenemos guardado
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
+    public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
         try {
-            User user = userService.findById(id);
+            UserDTO user = userService.findById(id);
             // responde con el Establecimiento
             return ResponseEntity.ok(user);
         } catch (Exception e) {
@@ -57,10 +51,28 @@ public class UserController {
         }
     }
 
+
+    @PostMapping
+    public ResponseEntity<UserDTO> saveUser(@RequestBody UserDTO user){
+        
+        UserDTO newUser = userService.saveUser(user);
+        //devuelve el titulo con el status de creado con el cuerpo del uuser creado
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+    }
+
+
+
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User user) {
+    public ResponseEntity<UserDTO> updateUser(@PathVariable Long id, @RequestBody UserDTO updatedUser) {
         try {
-            User updatedUser = userService.updateUser(id, user);
+            UserDTO userToUpdate = userService.findById(id);
+
+            userToUpdate.setName(updatedUser.getName());
+            userToUpdate.setEmail(updatedUser.getEmail());
+            userToUpdate.setRol(updatedUser.getRol());
+
+            userService.saveUser(userToUpdate);
+
             return ResponseEntity.ok(updatedUser);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -95,10 +107,14 @@ public class UserController {
     
     @GetMapping("/search-sale-by-id/{id}")
     public ResponseEntity<List<SaleDTO>> findAllSaleByUser(@PathVariable Long id) {
-        userService.findAllSaleByUser(id);
-        return ResponseEntity.ok().build();
+        try {
+        List<SaleDTO> saleList = userService.findAllSaleByUser(id);
+        return ResponseEntity.ok(saleList);
+        } catch  (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+
     }
-    
 
 
 }

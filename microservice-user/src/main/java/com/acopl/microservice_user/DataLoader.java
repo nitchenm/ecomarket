@@ -1,7 +1,5 @@
 package com.acopl.microservice_user;
 
-import java.util.Date;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
