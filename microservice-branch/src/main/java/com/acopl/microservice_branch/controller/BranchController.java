@@ -19,6 +19,9 @@ import com.acopl.microservice_branch.service.BranchService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,7 +48,26 @@ public class BranchController {
     @PostMapping
     @Operation(summary = "Guardar una nueva sucursal", description = "Crea una nueva sucursal con la información proporcionada.")
     @ApiResponse(responseCode = "201", description = "Sucursal creada exitosamente")
-    public ResponseEntity<BranchDTO> saveBranch(@RequestBody BranchDTO newBranch) {
+    public ResponseEntity<BranchDTO> saveBranch(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Objeto BranchDTO que representa la sucursal a crear",
+            required = true,
+            content = @Content(
+                schema = @Schema(implementation = BranchDTO.class),
+                examples = @ExampleObject(
+                    value = """
+                    {
+                    "name": "Sucursal Centro",
+                    "address": "Av. Principal 123",
+                    "city": "Santiago",
+                    "country": "Chile"
+                    }
+                    """
+                )
+            )
+        )
+        @RequestBody BranchDTO newBranch
+    ) {
         BranchDTO branch = branchService.save(newBranch);
         return ResponseEntity.status(HttpStatus.CREATED).body(branch);
     }
@@ -77,6 +99,23 @@ public class BranchController {
     public ResponseEntity<BranchDTO> updateBranch(
         @Parameter(description = "Código de la sucursal", required = true)
         @PathVariable Long id,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Objeto BranchDTO con los datos actualizados",
+            required = true,
+            content = @Content(
+                schema = @Schema(implementation = BranchDTO.class),
+                examples = @ExampleObject(
+                    value = """
+                    {
+                    "name": "Sucursal Centro",
+                    "address": "Av. Principal 123",
+                    "city": "Santiago",
+                    "country": "Chile"
+                    }
+                    """
+                )
+            )
+        )
         @RequestBody BranchDTO branchDTO) {
         try {
             BranchDTO updatedBranch = branchService.updateBranch(id, branchDTO);
