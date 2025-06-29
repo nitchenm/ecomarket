@@ -7,9 +7,14 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,6 +56,34 @@ public class BranchControllerV2 {
         try {
             BranchDTO branch = branchService.findById(id);
             return ResponseEntity.ok(assembler.toModel(branch));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<EntityModel<BranchDTO>> saveBranch(@RequestBody BranchDTO newBranch) {
+        BranchDTO branch = branchService.save(newBranch);
+        return ResponseEntity
+            .status(HttpStatus.CREATED)
+            .body(assembler.toModel(branch));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<EntityModel<BranchDTO>> updateBranch(@PathVariable Long id, @RequestBody BranchDTO branchDTO) {
+        try {
+            BranchDTO updatedBranch = branchService.updateBranch(id, branchDTO);
+            return ResponseEntity.ok(assembler.toModel(updatedBranch));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBranch(@PathVariable Long id) {
+        try {
+            branchService.deleteById(id);
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
