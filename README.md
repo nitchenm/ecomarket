@@ -78,3 +78,27 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 ![Ecomarket drawio](https://github.com/user-attachments/assets/0c0f2a14-3ab4-487c-809f-272082edeb09)
 
 
+## IMPORT SQL que se eliminaron al integrar los test
+
+- User
+```sql
+INSERT INTO users (id, name, email, rol) VALUES (1, 'Ana López', 'ana@example.com', 'ADMIN');
+INSERT INTO users (id, name, email, rol) VALUES (2, 'Juan Pérez', 'juan@example.com', 'USER');
+INSERT INTO users (id, name, email, rol) VALUES (3, 'Lucía Gómez', 'lucia@example.com', 'USER');
+INSERT INTO users (id, name, email, rol) VALUES (4, 'Carlos Ruiz', 'carlos@example.com', 'USER');
+INSERT INTO users (id, name, email, rol) VALUES (5, 'María Fernández', 'maria@example.com', 'USER');
+INSERT INTO users (id, name, email, rol) VALUES (6, 'Pedro Salas', 'pedro@example.com', 'USER');
+INSERT INTO users (id, name, email, rol) VALUES (7, 'Elena Torres', 'elena@example.com', 'USER');
+INSERT INTO users (id, name, email, rol) VALUES (8, 'David Navas', 'david@example.com', 'USER');
+INSERT INTO users (id, name, email, rol) VALUES (9, 'Laura Díaz', 'laura@example.com', 'USER');
+INSERT INTO users (id, name, email, rol) VALUES (10, 'Mateo Ríos', 'mateo@example.com', 'ADMIN');
+```
+- Branch
+```sql
+INSERT INTO branches (name, address, city, country) VALUES ('Sucursal Central', 'Avenida Libertador 1234', 'Santiago', 'Chile');
+INSERT INTO branches (name, address, city, country) VALUES ('Sucursal Norte', 'Rua das Flores 456', 'Santiago', 'Chile');
+INSERT INTO branches (name, address, city, country) VALUES ('Sucursal Este', 'Calle de la Paz 789', 'Santiago', 'Chile');
+INSERT INTO branches (name, address, city, country) VALUES ('Sucursal Sur', 'Rue de Rivoli 101', 'Santiago', 'Chile');
+INSERT INTO branches (name, address, city, country) VALUES ('Sucursal Italia', 'Via Roma 321', 'Santiago', 'Chile');
+INSERT INTO branches (name, address, city, country) VALUES ('Sucursal Oeste', 'Calle del Sol 654', 'Santiago', 'Chile');
+```
