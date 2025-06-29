@@ -33,6 +33,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
   - URL: [http://localhost:8060/api/v1/product](http://localhost:8060/api/v1/product)
 - **Sucursales**
   - URL: [http://localhost:8070/api/v1/branches](http://localhost:8070/api/v1/branches)
+  - URL: [http://localhost:8070/api/v2/branches](http://localhost:8070/api/v2/branches)
 
 ## Gateway
 
@@ -59,17 +60,18 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 - `microservice-eureka`: Service discovery
 - `microservice-config`: Configuración centralizada
 
----
-![Ecomarket drawio](https://github.com/user-attachments/assets/0c0f2a14-3ab4-487c-809f-272082edeb09)
 
-
-## Para pruebas en maven
+## Maven terminal
 
 - `microservice-branch`: mvn install -pl microservice-branch || mvn install -pl microservice-branch -am -DskipTests
 - `microservice-user`: mvn install -pl microservice-user || mvn install -pl microservice-user -am -DskipTests
 
-## Ruta definida para cada microservicio
+## Ruta definida para cada microservicio para visualizar la documentación
 
 - **Sucursales**
   - URL: [http://localhost:8070/doc/swagger-ui/index.html](http://localhost:8070/doc/swagger-ui/index.html)
+
+---
+![Ecomarket drawio](https://github.com/user-attachments/assets/0c0f2a14-3ab4-487c-809f-272082edeb09)
+
 
