@@ -27,6 +27,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 
 - **Usuarios**
   - URL: [http://localhost:8050/api/v1/users](http://localhost:8050/api/v1/users)
+  - - URL: [http://localhost:8050/api/v2/users](http://localhost:8050/api/v2/users)
 - **Ventas**
   - URL: [http://localhost:9090/api/v1/sale](http://localhost:9090/api/v1/sale)
 - **Productos**
@@ -68,6 +69,8 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 
 ## Ruta definida para cada microservicio para visualizar la documentación
 
+- **Usuarios**
+  - URL: [http://localhost:8050/api/v1/users](http://localhost:8050/doc/swagger-ui/index.html)
 - **Sucursales**
   - URL: [http://localhost:8070/doc/swagger-ui/index.html](http://localhost:8070/doc/swagger-ui/index.html)
 
