@@ -15,7 +15,7 @@ class MicroserviceUserApplicationTests {
 	}
 
 	//este test es para que no falle al iniciar la aplicacion
-//si falla, es porque hay un error en la configuracion de la aplicacion
+	//si falla, es porque es probable que la BBDD no está activa
 
 	@Test
     void mainRunsWithoutExceptions() {
