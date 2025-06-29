@@ -40,6 +40,13 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 
 - URL: [http://localhost:8086](http://localhost:8086)
 
+## Ruta definida para cada microservicio para visualizar la documentación
+
+- **Usuarios**
+  - URL: [http://localhost:8050/doc/swagger-ui/index.html](http://localhost:8050/doc/swagger-ui/index.html)
+- **Sucursales**
+  - URL: [http://localhost:8070/doc/swagger-ui/index.html](http://localhost:8070/doc/swagger-ui/index.html)
+
 ## Requisitos
 
 - Java
@@ -48,7 +55,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 ## Ejecución
 
 1. Clona el repositorio.
-2. Crea la base de datos ejecutando el script SQL en Laragon.
+2. Crea la base de datos ejecutando el script SQL en Laragon, tanto el de dev como el de test.
 3. Accede a los endpoints usando las URLs listadas arriba.
 
 ## Estructura del Proyecto
@@ -64,15 +71,8 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
 
 ## Maven terminal
 
-- `microservice-branch`: mvn install -pl microservice-branch || mvn install -pl microservice-branch -am -DskipTests
 - `microservice-user`: mvn install -pl microservice-user || mvn install -pl microservice-user -am -DskipTests
-
-## Ruta definida para cada microservicio para visualizar la documentación
-
-- **Usuarios**
-  - URL: [http://localhost:8050/api/v1/users](http://localhost:8050/doc/swagger-ui/index.html)
-- **Sucursales**
-  - URL: [http://localhost:8070/doc/swagger-ui/index.html](http://localhost:8070/doc/swagger-ui/index.html)
+- `microservice-branch`: mvn install -pl microservice-branch || mvn install -pl microservice-branch -am -DskipTests
 
 ---
 ![Ecomarket drawio](https://github.com/user-attachments/assets/0c0f2a14-3ab4-487c-809f-272082edeb09)
