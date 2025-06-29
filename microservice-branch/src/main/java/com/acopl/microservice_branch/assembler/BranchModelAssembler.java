@@ -1,12 +1,13 @@
 package com.acopl.microservice_branch.assembler;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
-
-import com.acopl.microservice_branch.controller.BranchController;
-import com.acopl.microservice_branch.dto.BranchDTO;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import org.springframework.stereotype.Component;
+
+import com.acopl.microservice_branch.controller.BranchControllerV2;
+import com.acopl.microservice_branch.dto.BranchDTO;
 
 @Component
 public class BranchModelAssembler implements RepresentationModelAssembler<BranchDTO, EntityModel<BranchDTO>> {
@@ -14,8 +15,8 @@ public class BranchModelAssembler implements RepresentationModelAssembler<Branch
     @Override
     public EntityModel<BranchDTO> toModel(BranchDTO branch) {
         return EntityModel.of(branch,
-            linkTo(methodOn(BranchController.class).findById(branch.getId())).withSelfRel(),
-            linkTo(methodOn(BranchController.class).listAllBranches()).withRel("branches")
+            linkTo(methodOn(BranchControllerV2.class).findById(branch.getId())).withSelfRel(),
+            linkTo(methodOn(BranchControllerV2.class).listAllBranches()).withRel("branches")
         );
     }
 }
