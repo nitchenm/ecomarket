@@ -62,8 +62,8 @@ public class SaleController {
 
     @GetMapping("/search-by-id/{id}")
     public ResponseEntity<List<SaleDTO>> findAllSaleByUser(@PathVariable Long id) {
-        saleService.findAllSaleByUser(id);
-        return ResponseEntity.ok().build();
+        List<SaleDTO> saleList = saleService.findAllSaleByUser(id);
+        return ResponseEntity.ok(saleList);
     }
 
 
