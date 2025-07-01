@@ -1,10 +1,12 @@
 package com.acopl.microservice_branch.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.acopl.microservice_branch.dto.BranchDTO;
 import com.acopl.microservice_branch.model.Branch;
 import com.acopl.microservice_branch.repository.BranchRepository;
 
@@ -17,24 +19,33 @@ public class BranchService {
     @Autowired
     private BranchRepository branchRepository;
 
-    //obtiene todas las sucursales
-    public List<Branch> findAll() {
-        return branchRepository.findAll();
+    public List<BranchDTO> findAll() {
+        return branchRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
-    //obtiene una sucursal por id
-    public Branch findById(Long id) {
-        return branchRepository.findById(id)
+    public BranchDTO findById(Long id) {
+        Branch branch = branchRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Branch not found with id: " + id));
+        return toDTO(branch);
     }
 
-    //guarda una nueva sucursal
-    public Branch save(Branch branch) {
-        // ¿Validaciones? ¿Evitar duplicados?
-        return branchRepository.save(branch);
+    public BranchDTO save(BranchDTO branchDTO) {
+        Branch branch = toEntity(branchDTO);
+        Branch saved = branchRepository.save(branch);
+        return toDTO(saved);
     }
 
-    //elimina una sucursal por id
+    public BranchDTO updateBranch(Long id, BranchDTO updatedDTO) {
+        Branch branch = branchRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Branch not found with id: " + id));
+        branch.setName(updatedDTO.getName());
+        branch.setAddress(updatedDTO.getAddress());
+        branch.setCity(updatedDTO.getCity());
+        branch.setCountry(updatedDTO.getCountry());
+        Branch saved = branchRepository.save(branch);
+        return toDTO(saved);
+    }
+
     public void deleteById(Long id) {
         if (!branchRepository.existsById(id)) {
             throw new RuntimeException("Branch not found with id: " + id);
@@ -42,16 +53,23 @@ public class BranchService {
         branchRepository.deleteById(id);
     }
 
-    //actualiza una sucursal
-    public Branch updateBranch(Long id, Branch updatedBranch) {
-        Branch existingBranch = branchRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Branch not found with id: " + id));
+    private BranchDTO toDTO(Branch branch) {
+        BranchDTO dto = new BranchDTO();
+        dto.setId(branch.getId());
+        dto.setName(branch.getName());
+        dto.setAddress(branch.getAddress());
+        dto.setCity(branch.getCity());
+        dto.setCountry(branch.getCountry());
+        return dto;
+    }
 
-        existingBranch.setName(updatedBranch.getName());
-        existingBranch.setAddress(updatedBranch.getAddress());
-        existingBranch.setCity(updatedBranch.getCity());
-        existingBranch.setCountry(updatedBranch.getCountry());
-
-        return branchRepository.save(existingBranch);
+    private Branch toEntity(BranchDTO dto) {
+        Branch branch = new Branch();
+        branch.setId(dto.getId());
+        branch.setName(dto.getName());
+        branch.setAddress(dto.getAddress());
+        branch.setCity(dto.getCity());
+        branch.setCountry(dto.getCountry());
+        return branch;
     }
 }

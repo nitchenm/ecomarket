@@ -18,14 +18,23 @@ import com.microservice_product.dto.ProductDTO;
 import com.microservice_product.model.Product;
 import com.microservice_product.service.ProductService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/product")
+@Tag(name = "Productos", description = "Operaciones relacionadas con los productos")
 public class ProductController {
 
     @Autowired
     private ProductService productService;
 
     @GetMapping
+    @Operation(summary = "Obtener todos los productos", description = "Obtiene una lista de todos los productos")
     public ResponseEntity<List<Product>>findAll(){
         List<Product> products = productService.findAll();
 
@@ -36,10 +45,10 @@ public class ProductController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Product> findById(@PathVariable Long id){
+    public ResponseEntity<ProductDTO> findById(@PathVariable Long id){
 
         try {
-            Product product = productService.findById(id);
+            ProductDTO product = productService.findById(id);
             return ResponseEntity.ok(product);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
@@ -47,18 +56,25 @@ public class ProductController {
     }
     
     @PostMapping
-    public ResponseEntity<Product> saveProduct(@RequestBody Product product){
+    public ResponseEntity<ProductDTO> saveProduct(@RequestBody ProductDTO product){
         
-        Product newProduct = productService.saveProduct(product);
+        ProductDTO newProduct = productService.saveProduct(product);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product updatedProduct){
+    @Operation(summary = "Actualizar un producto", description = "Actualiza un producto existente")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Producto actualizado exitosamente",
+            content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = Product.class))),
+        @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+    })
+    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO updatedProduct){
         try {
-            Product productToUpdate = productService.findById(id);
+            ProductDTO productToUpdate = productService.findById(id);
 
             productToUpdate.setName(updatedProduct.getName());
             productToUpdate.setQuantity(updatedProduct.getQuantity());
@@ -73,6 +89,11 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar un producto", description = "Elimina un producto por su id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Producto eliminado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Producto no encontrado")
+    })
     public ResponseEntity<?> deleteByID(@PathVariable Long id){
         try {
             productService.deleteById(id);

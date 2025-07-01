@@ -23,15 +23,42 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public Product findById(Long id){
-        return productRepository.findById(id).get();
+    public ProductDTO findById(Long id){
+
+        Product productSearched = productRepository.findById(id).orElseThrow(()-> new RuntimeException("Product not found."));
+
+        ProductDTO productFound = new ProductDTO();
+
+        productFound.setId(productSearched.getId());
+        productFound.setName(productSearched.getName());
+        productFound.setQuantity(productSearched.getQuantity());
+        productFound.setPrice(productSearched.getPrice());
+
+        return productFound;
+        
     }
 
-    public Product saveProduct(Product newProduct){
-        return productRepository.save(newProduct);
+    public ProductDTO saveProduct(ProductDTO productDTO){
+        Product newProduct = new Product();
+
+        newProduct.setId(productDTO.getId());
+        newProduct.setName(productDTO.getName());
+        newProduct.setQuantity(productDTO.getQuantity());
+        newProduct.setPrice(productDTO.getPrice());
+
+        Product savedProduct = productRepository.save(newProduct);
+
+        ProductDTO returningProduct = new ProductDTO();
+
+        returningProduct.setId(savedProduct.getId());
+        returningProduct.setName(savedProduct.getName());
+        returningProduct.setQuantity(savedProduct.getQuantity());
+        returningProduct.setPrice(savedProduct.getPrice());
+
+        return returningProduct;
     }
 
-    public Product updateProduct(Long id, Product updatedProduct) {
+    public ProductDTO updateProduct(Long id, ProductDTO updatedProduct) {
     
         Product productToUpdate = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found."));
 
@@ -39,7 +66,17 @@ public class ProductService {
         productToUpdate.setQuantity(updatedProduct.getQuantity());
         productToUpdate.setPrice(updatedProduct.getPrice());
 
-        return productRepository.save(productToUpdate);
+        Product savedProduct = productRepository.save(productToUpdate);
+
+        ProductDTO returningProduct = new ProductDTO();
+
+        returningProduct.setId(savedProduct.getId());
+        returningProduct.setName(savedProduct.getName());
+        returningProduct.setQuantity(savedProduct.getQuantity());
+        returningProduct.setPrice(savedProduct.getPrice());
+
+        return returningProduct;
+
     }
 
     public void deleteById(Long id){

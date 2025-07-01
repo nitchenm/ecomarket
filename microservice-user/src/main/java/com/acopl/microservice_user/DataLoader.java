@@ -1,7 +1,5 @@
 package com.acopl.microservice_user;
 
-import java.util.Date;
-import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -23,7 +21,7 @@ public class DataLoader implements CommandLineRunner{
     public void run(String... args) throws Exception {
         Faker faker = new Faker();
     
-        for(Long i = (long) 0; i < 3; i++){
+        for(Long i = (long) 0; i < 10; i++){
             String firstName = faker.name().firstName();
             String fullName = faker.name().fullName();
     

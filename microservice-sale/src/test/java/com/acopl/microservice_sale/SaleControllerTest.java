@@ -158,6 +158,27 @@ public class SaleControllerTest {
               .contentType(MediaType.APPLICATION_JSON_VALUE))
               .andExpect(status().isOk());
     }
+  
+    public void findAllSaleControllerTest()throws JsonProcessingException, Exception{
+        String uri = "/api/v1/sale";
+        List<SaleDTO> saleList = new ArrayList<>();
+        SaleDTO saleDTO = new SaleDTO();
+        saleDTO.setClientID(1L);
+        saleDTO.setProductID(1L);
+        saleDTO.setTotal(1999.98F);
+        saleDTO.setDateTime(new Date());
+        saleDTO.setId(1L);
+
+        saleList.add(saleDTO);
+
+        when(saleService.findAllSales()).thenReturn(saleList);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(uri)
+               .accept(MediaType.APPLICATION_JSON))
+               .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk());
+    }
+
 
     
 }

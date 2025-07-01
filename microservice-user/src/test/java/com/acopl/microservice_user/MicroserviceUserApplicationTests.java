@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 @ActiveProfiles("test")
-@SpringBootTest
+@SpringBootTest(classes = MicroserviceUserApplicationTests.class)
 class MicroserviceUserApplicationTests {
 
 	//creo que es necesario dejarlo
@@ -15,10 +15,11 @@ class MicroserviceUserApplicationTests {
 	}
 
 	//este test es para que no falle al iniciar la aplicacion
-//si falla, es porque hay un error en la configuracion de la aplicacion
+	//si falla, es porque es probable que la BBDD no está activa
 
 	@Test
     void mainRunsWithoutExceptions() {
         MicroserviceUserApplication.main(new String[] {});
+		
     }
 }

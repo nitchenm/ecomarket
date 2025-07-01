@@ -45,7 +45,7 @@ public class ProductServiceTest {
         Product product = new Product(id, "Patata", 20, 2000);
         when(productRepository.findById(id)).thenReturn(Optional.of(product));
 
-        Product found = productService.findById(id);
+        ProductDTO found = productService.findById(id);
         assertNotNull(found);
         assertEquals(id, found.getId());
     }
@@ -53,12 +53,40 @@ public class ProductServiceTest {
 
     @Test
     public void testSave(){
-        Product product = new Product((long)1, "Patata", 20,2000);
-        when(productRepository.save(product)).thenReturn(product);
+        
+        //Instanciamos el DTO con el que vamos a trabajar
+        ProductDTO productDTO = new ProductDTO((long)1, "Patata", 20,2000);
+        
 
-        Product savedProduct = productService.saveProduct(product);
-        assertNotNull(savedProduct);
-        assertEquals("Patata", savedProduct.getName());
+        //Se crea el producto que se va aguardar
+        Product productToSave = new Product();
+
+        //Le pasamos los valores del DTO
+        productToSave.setId(productDTO.getId());
+        productToSave.setName(productDTO.getName());
+        productToSave.setQuantity(productDTO.getQuantity());
+        productToSave.setPrice(productDTO.getPrice());
+
+        //Creamos el producto que se supone que va a devolver la base de dato
+        Product savedProduct = new Product();
+
+        //Le pasamos manualmente los valores que ya estan establecidos
+        savedProduct.setId((long)1);
+        savedProduct.setName("Patata");
+        savedProduct.setQuantity(20);
+        savedProduct.setPrice(2000);
+
+        //DEfinimos el comportamiento del mock
+        when(productRepository.save(any(Product.class))).thenReturn(savedProduct);
+
+        //llamamos al propio metodo del service con nuestro DTO
+        ProductDTO productResult = productService.saveProduct(productDTO);
+
+        //Hacemos las validaciones
+        assertNotNull(productResult);
+        assertEquals("Patata", productResult.getName());
+        assertEquals(20, productResult.getQuantity());
+        assertEquals(2000.0, productResult.getPrice());
     }
 
     @Test
@@ -114,7 +142,7 @@ public class ProductServiceTest {
         //Luego creamos el producto con los nuevos valores para updatear a
         //los valores del producto que ya existe
 
-        Product updatedProduct = new Product();
+        ProductDTO updatedProduct = new ProductDTO();
 
         //le seteamos los nuevos valores menos el id porque ese no cambia
         updatedProduct.setName("papa");
@@ -134,7 +162,7 @@ public class ProductServiceTest {
         when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         //llamamos al propio metodo del service
-        Product productToUpdate = productService.updateProduct(id, updatedProduct);
+        ProductDTO productToUpdate = productService.updateProduct(id, updatedProduct);
 
         
         //Se hacen las validaciones para verificar que los datos fueron cambiados
