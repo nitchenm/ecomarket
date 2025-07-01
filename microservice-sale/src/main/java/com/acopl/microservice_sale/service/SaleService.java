@@ -12,7 +12,6 @@ import com.acopl.microservice_sale.dto.SaleDTO;
 import com.acopl.microservice_sale.model.Sale;
 import com.acopl.microservice_sale.repository.ISaleRepository;
 
-
 @Service
 public class SaleService {
 
@@ -22,30 +21,25 @@ public class SaleService {
     @Autowired
     private ClientProduct clientProduct;
 
-    public List<SaleDTO> findAllSales(){
+    public List<SaleDTO> findAllSales() {
         try {
             List<Sale> saleList = saleRepository.findAll();
-            //Uso stream para el mapeo con el metodo creado
-        return saleList.stream()
-                        .map(this::mapToSaleDTO)
-                        .collect(Collectors.toList());
+            return saleList.stream()
+                    .map(this::mapToSaleDTO)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("No se encontraron ventas: " + e.getMessage());
         }
-        
     }
 
-    public SaleDTO findById(Long id){
-        Sale newSale = saleRepository.findById(id).orElseThrow(()-> new RuntimeException("Sale not found"));
-
-        SaleDTO newSaleDTO = new SaleDTO();
-        mapToSaleDTO(newSale);
-        return newSaleDTO;
+    public SaleDTO findById(Long id) {
+        Sale sale = saleRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Sale not found"));
+        return mapToSaleDTO(sale);
     }
-    
-    public SaleDTO saveSale(SaleDTO saleDTO){
+
+    public SaleDTO saveSale(SaleDTO saleDTO) {
         Sale newSale = new Sale();
-
         newSale.setClientId(saleDTO.getClientID());
         newSale.setDateTime(saleDTO.getDateTime());
         newSale.setId(saleDTO.getId());
@@ -54,45 +48,37 @@ public class SaleService {
 
         saleRepository.save(newSale);
 
-        SaleDTO saleDTOreturn = mapToSaleDTO(newSale);
-
-        return saleDTOreturn;
+        return mapToSaleDTO(newSale);
     }
 
-    public void deleteSale(Long id){
+    public void deleteSale(Long id) {
         saleRepository.deleteById(id);
     }
 
-    public List<SaleDTO> findAllSaleByUser(Long id){
+    public List<SaleDTO> findAllSaleByUser(Long id) {
         try {
             List<Sale> saleList = saleRepository.findByClientId(id);
-        
             return saleList.stream()
-                        .map(this::mapToSaleDTO)
-                        .collect(Collectors.toList());
+                    .map(this::mapToSaleDTO)
+                    .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("No se encontraron ventas: " + e.getMessage());
         }
     }
 
-
-   public ProductDTO findAllProductsBySale(Long saleId) {
-        Sale sale = saleRepository.findById(saleId).orElseThrow(() -> new RuntimeException("Sale not found"));
-
+    public ProductDTO findAllProductsBySale(Long saleId) {
+        Sale sale = saleRepository.findById(saleId)
+                .orElseThrow(() -> new RuntimeException("Sale not found"));
         return clientProduct.getProductsByIds(saleId);
     }
 
-    private SaleDTO mapToSaleDTO(Sale sale){
+    private SaleDTO mapToSaleDTO(Sale sale) {
         SaleDTO saleDto = new SaleDTO();
-
         saleDto.setDateTime(sale.getDateTime());
         saleDto.setId(sale.getId());
         saleDto.setProductID(sale.getProductId());
         saleDto.setTotal(sale.getTotal());
         saleDto.setClientID(sale.getClientId());
-
         return saleDto;
     }
-
-
 }

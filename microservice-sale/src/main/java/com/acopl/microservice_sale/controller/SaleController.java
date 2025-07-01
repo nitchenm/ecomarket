@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.acopl.microservice_sale.dto.ProductDTO;
 import com.acopl.microservice_sale.dto.SaleDTO;
@@ -22,10 +22,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-
-
-
-@Controller
+@RestController
 @RequestMapping("/api/v1/sale")
 @Tag(name = "Ventas", description = "Operaciones relacionadas a las ventas.")
 public class SaleController {
@@ -66,13 +63,10 @@ public class SaleController {
         try {
             List<SaleDTO> saleList = saleService.findAllSales();
             return saleList.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(saleList);
-     
         } catch (Exception e) {
             return ResponseEntity.noContent().build();
         }
-        
     }
-    
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar venta", description = "Elimina una venta existente por su ID.")
@@ -80,27 +74,28 @@ public class SaleController {
         @ApiResponse(responseCode = "204", description = "Venta eliminada exitosamente"),
         @ApiResponse(responseCode = "404", description = "Venta no encontrada")
     })
-    public ResponseEntity<Void> deleteSale(Long id){
+    public ResponseEntity<Void> deleteSale(@PathVariable Long id) {
         try {
             saleService.deleteSale(id);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }
     }
 
     @GetMapping("/search-by-id/{id}")
+    @Operation(summary = "Buscar ventas por usuario", description = "Obtiene todas las ventas realizadas por un usuario específico.")
+    @ApiResponse(responseCode = "200", description = "Ventas encontradas")
     public ResponseEntity<List<SaleDTO>> findAllSaleByUser(@PathVariable Long id) {
         List<SaleDTO> saleList = saleService.findAllSaleByUser(id);
         return ResponseEntity.ok(saleList);
     }
 
-
     @GetMapping("/search-products-by-id/{id}")
+    @Operation(summary = "Buscar productos por venta", description = "Obtiene los productos asociados a una venta específica.")
+    @ApiResponse(responseCode = "200", description = "Productos encontrados")
     public ResponseEntity<ProductDTO> findAllProductsBySale(@PathVariable Long id) {
         ProductDTO productsBySale = saleService.findAllProductsBySale(id);
         return ResponseEntity.ok(productsBySale);
     }
-    
-    
 }

@@ -1,1 +1,0 @@
-INSERT INTO product (id, name, quantity, price) VALUES (1, 'Detergente Natural', 40, 5250);

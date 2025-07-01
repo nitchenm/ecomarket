@@ -1,4 +1,4 @@
-package com.acopl.microservice_branch.config;
+package com.microservice_product.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
