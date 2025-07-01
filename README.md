@@ -32,7 +32,7 @@ ALTER USER 'root'@'localhost' IDENTIFIED BY '';
   - URL: [http://localhost:9090/api/v1/sale](http://localhost:9090/api/v1/sale)
 - **Productos**
   - URL: [http://localhost:8060/api/v1/product](http://localhost:8060/api/v1/product)
-  - URL: [http://localhost:8060/api/v1/product](http://localhost:8060/api/v2/product)
+  - URL: [http://localhost:8060/api/v2/product](http://localhost:8060/api/v2/product)
 - **Sucursales**
   - URL: [http://localhost:8070/api/v1/branches](http://localhost:8070/api/v1/branches)
   - URL: [http://localhost:8070/api/v2/branches](http://localhost:8070/api/v2/branches)
