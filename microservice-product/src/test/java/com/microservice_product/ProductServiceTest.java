@@ -34,7 +34,7 @@ public class ProductServiceTest {
     public void testFindAll(){
         when(productRepository.findAll()).thenReturn(List.of(new Product((long)1, "Patata", 20, 2000)));
 
-        List<Product> products = productService.findAll();
+        List<ProductDTO> products = productService.findAll();
         assertNotNull(products);
         assertEquals(1, products.size());
     }

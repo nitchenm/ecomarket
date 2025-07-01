@@ -19,8 +19,20 @@ public class ProductService {
     private ProductRepository productRepository;
 
 
-    public List<Product> findAll(){
-        return productRepository.findAll();
+    public List<ProductDTO> findAll(){
+        List<Product> products = productRepository.findAll();
+        return products.stream().map(this::convertToDTO).toList();
+    }
+
+    //Metodo auxiliar para convertir modelo a DTO
+    private ProductDTO convertToDTO(Product product){
+        ProductDTO dto = new ProductDTO();
+        dto.setId(product.getId());
+        dto.setName(product.getName());
+        dto.setQuantity(product.getQuantity());
+        dto.setPrice(product.getPrice());
+
+        return dto;
     }
 
     public ProductDTO findById(Long id){

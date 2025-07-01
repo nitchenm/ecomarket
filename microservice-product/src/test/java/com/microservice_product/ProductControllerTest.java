@@ -26,7 +26,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microservice_product.controller.ProductController;
 import com.microservice_product.dto.ProductDTO;
-import com.microservice_product.model.Product;
 import com.microservice_product.service.ProductService;
 
 @WebMvcTest(ProductController.class)
@@ -74,9 +73,9 @@ public class ProductControllerTest {
 
     @Test
     public void testFindAll_WithProducts() throws Exception {
-        List<Product> productList = List.of(
-            new Product((long)1, "Patata", 20, 2000),
-            new Product((long)2, "Manzana", 10, 1500)
+        List<ProductDTO> productList = List.of(
+            new ProductDTO((long)1, "Patata", 20, 2000),
+            new ProductDTO((long)2, "Manzana", 10, 1500)
         );
 
         when(productService.findAll()).thenReturn(productList);
