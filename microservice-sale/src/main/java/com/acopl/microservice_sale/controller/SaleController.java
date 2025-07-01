@@ -17,6 +17,11 @@ import com.acopl.microservice_sale.dto.ProductDTO;
 import com.acopl.microservice_sale.dto.SaleDTO;
 import com.acopl.microservice_sale.service.SaleService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 
 
 
@@ -29,12 +34,19 @@ public class SaleController {
     private SaleService saleService;
 
     @PostMapping("/create")
+    @Operation(summary = "Guardar una nueva venta", description = "Crea una nueva venta con la información proporcionada.")
+    @ApiResponse(responseCode = "201", description = "Venta creada exitosamente")
     public ResponseEntity<SaleDTO> saveSale(@RequestBody SaleDTO sale) {
         SaleDTO newSale = saleService.saveSale(sale);
         return ResponseEntity.status(HttpStatus.CREATED).body(newSale);
     }
 
     @GetMapping("{id}")
+    @Operation(summary = "Buscar venta por ID", description = "Obtiene los detalles de una venta específica por su ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Venta encontrada"),
+        @ApiResponse(responseCode = "404", description = "Venta no encontrada")
+    })
     public ResponseEntity<SaleDTO> findById(@PathVariable Long id) {
         try {
             SaleDTO saleFound = saleService.findById(id);
@@ -63,6 +75,11 @@ public class SaleController {
     
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar venta", description = "Elimina una venta existente por su ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Venta eliminada exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Venta no encontrada")
+    })
     public ResponseEntity<Void> deleteSale(Long id){
         try {
             saleService.deleteSale(id);
