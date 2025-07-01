@@ -35,8 +35,8 @@ public class ProductController {
 
     @GetMapping
     @Operation(summary = "Obtener todos los productos", description = "Obtiene una lista de todos los productos")
-    public ResponseEntity<List<Product>>findAll(){
-        List<Product> products = productService.findAll();
+    public ResponseEntity<List<ProductDTO>>findAll(){
+        List<ProductDTO> products = productService.findAll();
 
         if(products.isEmpty()){
             return ResponseEntity.noContent().build();
