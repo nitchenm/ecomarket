@@ -22,6 +22,7 @@ import com.acopl.microservice_sale.service.SaleService;
 
 @Controller
 @RequestMapping("/api/v1/sale")
+@Tag(name = "Ventas", description = "Operaciones relacionadas a las ventas.")
 public class SaleController {
 
     @Autowired
@@ -44,6 +45,11 @@ public class SaleController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar todas las ventas", description = "Obtiene una lista de todas las ventas registradas.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de ventas encontrada"),
+        @ApiResponse(responseCode = "204", description = "No hay ventas registradas")
+    })
     public ResponseEntity<List<SaleDTO>> findAllSales() {
         List<SaleDTO> saleList = saleService.findAllSales();
         return saleList.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(saleList);
