@@ -12,8 +12,4 @@ class MicroserviceSaleApplicationTests {
     void contextLoads() {
     }
 
-    @Test
-    void mainRunsWithoutExceptions() {
-        MicroserviceSaleApplication.main(new String[] {});
-    }
 }

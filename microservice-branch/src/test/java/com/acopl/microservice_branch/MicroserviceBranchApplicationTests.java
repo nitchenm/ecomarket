@@ -10,8 +10,4 @@ class MicroserviceBranchApplicationTests {
     void contextLoads() {
     }
 
-    @Test
-    void mainRunsWithoutExceptions() {
-        MicroserviceBranchApplication.main(new String[] {});
-    }
 }

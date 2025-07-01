@@ -103,3 +103,16 @@ INSERT INTO branches (name, address, city, country) VALUES ('Sucursal Sur', 'Rue
 INSERT INTO branches (name, address, city, country) VALUES ('Sucursal Italia', 'Via Roma 321', 'Santiago', 'Chile');
 INSERT INTO branches (name, address, city, country) VALUES ('Sucursal Oeste', 'Calle del Sol 654', 'Santiago', 'Chile');
 ```
+
+- Sale 
+```sql
+INSERT INTO sales (id, date_time, total, client_id, productId) VALUES  (1, '2024-06-01 10:00:00', 150.50, 1,1);
+INSERT INTO sales (id, date_time, total, client_id, productId) VALUES  (2, '2024-06-02 11:30:00', 200.00, 2,1);
+INSERT INTO sales (id, date_time, total, client_id, productId) VALUES  (3, '2024-06-03 14:15:00', 99.99, 3,1);
+INSERT INTO sales (id, date_time, total, client_id, productId) VALUES  (4, '2024-06-04 16:45:00', 300.00, 4,1);
+INSERT INTO sales (id, date_time, total, client_id, productId) VALUES  (5, '2024-06-05 09:00:00', 120.75, 5,1);
+INSERT INTO sales (id, date_time, total, client_id, productId) VALUES  (6, '2024-06-06 13:30:00', 250.00, 6,1);
+INSERT INTO sales (id, date_time, total, client_id, productId) VALUES  (7, '2024-06-07 15:00:00', 175.25, 7,1);
+INSERT INTO sales (id, date_time, total, client_id, productId) VALUES  (8, '2024-06-08 12:20:00', 80.00, 8,1);
+INSERT INTO sales (id, date_time, total, client_id, productId) VALUES  (9, '2024-06-09 17:10:00', 220.50, 9,1);
+```
