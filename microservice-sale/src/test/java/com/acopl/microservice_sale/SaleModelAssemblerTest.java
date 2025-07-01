@@ -2,21 +2,16 @@ package com.acopl.microservice_sale;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.hateoas.EntityModel;
 
 import com.acopl.microservice_sale.assembler.SaleModelAssembler;
 import com.acopl.microservice_sale.dto.SaleDTO;
 
-@WebMvcTest 
 class SaleModelAssemblerTest {
-
-    @Autowired
-    private SaleModelAssembler assembler;
 
     @Test
     void toModel_shouldAddLinks() {
+        SaleModelAssembler assembler = new SaleModelAssembler();
         SaleDTO sale = new SaleDTO();
         sale.setId(10L);
 

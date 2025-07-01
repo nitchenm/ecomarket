@@ -1,5 +1,6 @@
 package com.acopl.microservice_sale;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -102,5 +103,29 @@ public class SaleControllerV2Test {
 
         mockMvc.perform(delete("/api/v2/sales/1"))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testListAllSalesNoContent() throws Exception {
+        when(saleService.findAllSales()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/v2/sales"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void testFindByIdNotFound() throws Exception {
+        when(saleService.findById(99L)).thenThrow(new RuntimeException("No encontrada"));
+
+        mockMvc.perform(get("/api/v2/sales/99"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testDeleteSaleNotFound() throws Exception {
+        Mockito.doThrow(new RuntimeException("No encontrada")).when(saleService).deleteSale(99L);
+
+        mockMvc.perform(delete("/api/v2/sales/99"))
+                .andExpect(status().isNotFound());
     }
 }

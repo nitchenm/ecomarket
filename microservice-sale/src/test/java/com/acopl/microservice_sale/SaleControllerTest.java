@@ -150,4 +150,12 @@ public class SaleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(2L));
     }
+
+    @Test
+    void testFindAllSalesThrowsException() throws Exception {
+        when(saleService.findAllSales()).thenThrow(new RuntimeException("DB error"));
+
+        mockMvc.perform(get("/api/v1/sale"))
+                .andExpect(status().isNoContent());
+    }
 }
