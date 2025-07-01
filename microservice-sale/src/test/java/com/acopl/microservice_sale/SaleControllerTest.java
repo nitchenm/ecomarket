@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -13,11 +14,13 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.acopl.microservice_sale.controller.SaleController;
+import com.acopl.microservice_sale.dto.ProductDTO;
 import com.acopl.microservice_sale.dto.SaleDTO;
 import com.acopl.microservice_sale.service.SaleService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -76,6 +79,86 @@ public class SaleControllerTest {
     }
 
     @Test
+    public void findAllSalesControllerTest() throws JsonProcessingException, Exception{
+      String uri = "/api/v1/sale";
+
+      SaleDTO sale = new SaleDTO();
+      sale.setClientID(1L);
+      sale.setProductID(1L);
+      sale.setTotal(1999.98F);
+      sale.setDateTime(new Date());
+      sale.setId(1L);
+
+      List<SaleDTO> saleList = saleService.findAllSales();
+      saleList.add(sale);
+
+      when(saleService.findAllSales()).thenReturn(saleList);
+
+      mockMvc.perform(MockMvcRequestBuilders.get(uri)
+               .accept(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk());
+               
+    }
+
+    @Test
+    public void deleteSaleByIdControllerTest() throws JsonProcessingException, Exception{
+      String uri = "/api/v1/sale/1";
+      Long id = 1L;
+
+      doNothing().when(saleService).deleteSale(id);
+
+      mockMvc.perform(delete(uri))
+              .andExpect(status().isOk());
+
+    }
+
+    @Test
+    public void findAllSaleByUserControllerTest() throws JsonProcessingException, Exception{
+      String uri = "/api/v1/sale/search-by-id/1";
+
+      List<SaleDTO> saleListDTO = new ArrayList<>();
+
+      SaleDTO sale = new SaleDTO();
+      sale.setClientID(1L);
+      sale.setProductID(1L);
+      sale.setTotal(1999.98F);
+      sale.setDateTime(new Date());
+      sale.setId(1L);
+      
+      saleListDTO.add(sale);
+
+      when(saleService.findAllSaleByUser(sale.getClientID())).thenReturn(saleListDTO);
+      
+      mockMvc.perform(MockMvcRequestBuilders.get(uri)
+              .contentType(MediaType.APPLICATION_JSON_VALUE))
+              .andExpect(status().isOk());
+      
+    }
+
+    @Test
+    public void findAllProductsBySale() throws JsonProcessingException, Exception{
+      String uri = "/api/v1/sale/search-products-by-id/1";
+
+      SaleDTO sale = new SaleDTO();
+      sale.setClientID(1L);
+      sale.setProductID(1L);
+      sale.setTotal(1999.98F);
+      sale.setDateTime(new Date());
+      sale.setId(1L);
+
+      ProductDTO product = new ProductDTO();
+      product.setId(1L);
+      product.setName("producto1");
+      product.setPrice(200f);
+      product.setQuantity(2);
+      
+      when(saleService.findAllProductsBySale(sale.getId())).thenReturn(product);
+
+      mockMvc.perform(MockMvcRequestBuilders.get(uri)
+              .contentType(MediaType.APPLICATION_JSON_VALUE))
+              .andExpect(status().isOk());
+    }
+  
     public void findAllSaleControllerTest()throws JsonProcessingException, Exception{
         String uri = "/api/v1/sale";
         List<SaleDTO> saleList = new ArrayList<>();
@@ -96,25 +179,6 @@ public class SaleControllerTest {
                .andExpect(status().isOk());
     }
 
-    
 
-    /*
-     * @Test
-         public void createProduct() throws Exception {
-            String uri = "/products";
-            Product product = new Product();
-            product.setId("3");
-            product.setName("Ginger");
-            
-            String inputJson = super.mapToJson(product);
-            MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.post(uri)
-               .contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson)).andReturn();
-            
-            int status = mvcResult.getResponse().getStatus();
-            assertEquals(201, status);
-            String content = mvcResult.getResponse().getContentAsString();
-            assertEquals(content, "Product is created successfully");
-         }
-     */
     
 }
