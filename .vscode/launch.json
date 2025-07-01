@@ -69,6 +69,16 @@
             "projectName": "microservice-branch",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-MicroserviceSwaggerCentralApplication<microservice-swagger-central>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.acopl.microservice_swagger_central.MicroserviceSwaggerCentralApplication",
+            "projectName": "microservice-swagger-central",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

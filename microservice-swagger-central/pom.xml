@@ -4,15 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.acopl</groupId>
-  		<artifactId>ecomarket</artifactId>
-  		<version>1.0-SNAPSHOT</version> 
+		<artifactId>ecomarket</artifactId>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
-
 	<groupId>com.acopl</groupId>
-	<artifactId>microservice-gateway</artifactId>
+	<artifactId>microservice-swagger-central</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>microservice-gateway</name>
-	<description>gateway</description>
+	<name>microservice-swagger-central</name>
+	<description>Microservicio para centralizar documentacion</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -33,7 +32,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -41,17 +40,22 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-gateway</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.2.0</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -69,10 +73,28 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
+			</plugin>
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>com.acopl.microservice_gateway.MicroserviceGatewayApplication</mainClass>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+					<mainClass>com.acopl.microservice_swagger_central.MicroserviceSwaggerCentralApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
