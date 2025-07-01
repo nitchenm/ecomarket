@@ -7,6 +7,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -111,5 +113,19 @@ public class SaleServiceTest {
         assertNotNull(result);
         assertEquals(2L, result.getId());
         assertEquals("Producto Test", result.getName());
+    }
+
+    @Test
+    void testFindAllSalesThrowsException() {
+        when(saleRepository.findAll()).thenThrow(new RuntimeException("DB error"));
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> saleService.findAllSales());
+        assertTrue(ex.getMessage().contains("No se encontraron ventas"));
+    }
+
+    @Test
+    void testFindAllSaleByUserThrowsException() {
+        when(saleRepository.findByClientId(1L)).thenThrow(new RuntimeException("DB error"));
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> saleService.findAllSaleByUser(1L));
+        assertTrue(ex.getMessage().contains("No se encontraron ventas"));
     }
 }

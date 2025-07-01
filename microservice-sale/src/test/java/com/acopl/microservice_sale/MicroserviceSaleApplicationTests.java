@@ -2,14 +2,18 @@ package com.acopl.microservice_sale;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
-@SpringBootTest(classes = MicroserviceSaleApplicationTests.class)
+@SpringBootTest
 class MicroserviceSaleApplicationTests {
 
     @Test
     void contextLoads() {
-        // Este test verifica que el contexto de Spring arranca correctamente.
+        // Verifica que el contexto de Spring arranca correctamente.
+    }
+
+    @Test
+    void mainMethodRuns() {
+        MicroserviceSaleApplication.main(new String[] {});
+        // Si no lanza excepción, el test pasa.
     }
 }

@@ -2,14 +2,18 @@ package com.acopl.microservice_swagger_central;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-@ActiveProfiles("test")
-@SpringBootTest(classes = MicroserviceSwaggerCentralApplication.class)
+@SpringBootTest
 class MicroserviceSwaggerCentralApplicationTests {
 
     @Test
     void contextLoads() {
-        // Context loading is tested by Spring Boot automatically.
+        // Verifica que el contexto de Spring arranca correctamente.
+    }
+
+    @Test
+    void mainMethodRuns() {
+        MicroserviceSwaggerCentralApplication.main(new String[] {});
+        // Si no lanza excepción, el test pasa.
     }
 }
