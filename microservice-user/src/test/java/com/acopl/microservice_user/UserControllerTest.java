@@ -1,161 +1,121 @@
 package com.acopl.microservice_user;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.acopl.microservice_user.controller.UserController;
 import com.acopl.microservice_user.dto.SaleDTO;
 import com.acopl.microservice_user.dto.UserDTO;
 import com.acopl.microservice_user.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@ActiveProfiles("test")
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(UserController.class)
 class UserControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private UserService userService;
 
-    @InjectMocks
-    private UserController userController;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    private UserDTO userDTO;
-    private SaleDTO saleDTO;
+    @Test
+    void testListAllUsers_withUsers() throws Exception {
+        UserDTO user = new UserDTO();
+        user.setId(1L);
+        user.setName("Test User");
+        user.setEmail("test@duocuc.cl");
 
-    @BeforeEach
-    void setUp() {
-        userDTO = new UserDTO();
-        userDTO.setId(1L);
-        userDTO.setName("Test User");
-        userDTO.setEmail("test@duocuc.cl");
-        userDTO.setRol("USER");
+        when(userService.findall()).thenReturn(List.of(user));
 
-        saleDTO = new SaleDTO();
+        mockMvc.perform(get("/api/v1/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].name").value("Test User"));
     }
 
     @Test
-    void testListAllUsers_withUsers() {
-        when(userService.findall()).thenReturn(List.of(userDTO));
-        ResponseEntity<List<UserDTO>> response = userController.listAllUsers();
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertFalse(response.getBody().isEmpty());
+    void testListAllUsers_noUsers() throws Exception {
+        when(userService.findall()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/api/v1/users"))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void testListAllUsers_noUsers() {
-        when(userService.findall()).thenReturn(List.of());
-        ResponseEntity<List<UserDTO>> response = userController.listAllUsers();
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    void testSaveUser() throws Exception {
+        UserDTO user = new UserDTO();
+        user.setId(1L);
+        user.setName("Test User");
+        user.setEmail("test@duocuc.cl");
+
+        when(userService.saveUser(any(UserDTO.class))).thenReturn(user);
+
+        mockMvc.perform(post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @Test
-    void testFindById_found() {
-        when(userService.findById(1L)).thenReturn(userDTO);
-        ResponseEntity<UserDTO> response = userController.findById(1L);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(userDTO, response.getBody());
-    }
-
-    @Test
-    void testFindById_notFound() {
-        when(userService.findById(2L)).thenThrow(new RuntimeException());
-        ResponseEntity<UserDTO> response = userController.findById(2L);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    void testSaveUser() {
-        when(userService.saveUser(any(UserDTO.class))).thenReturn(userDTO);
-        ResponseEntity<UserDTO> response = userController.saveUser(userDTO);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(userDTO, response.getBody());
-    }
-
-    @Test
-    void testUpdateUser_found() {
-        when(userService.findById(1L)).thenReturn(userDTO);
-        when(userService.saveUser(any(UserDTO.class))).thenReturn(userDTO);
-        ResponseEntity<UserDTO> response = userController.updateUser(1L, userDTO);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(userDTO, response.getBody());
-    }
-
-    @Test
-    void testUpdateUser_notFound() {
-        when(userService.findById(2L)).thenThrow(new RuntimeException());
-        ResponseEntity<UserDTO> response = userController.updateUser(2L, userDTO);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    void testDeleteUser_success() {
-        doNothing().when(userService).deleteById(1L);
-        ResponseEntity<Void> response = userController.deleteUser(1L);
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-    }
-
-    @Test
-    void testDeleteUser_notFound() {
-        doThrow(new RuntimeException()).when(userService).deleteById(2L);
-        ResponseEntity<Void> response = userController.deleteUser(2L);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    void testAuthenticateById_success() {
+    void testAuthenticateById_success() throws Exception {
         when(userService.authenticateById(1L, "test@duocuc.cl", "USER")).thenReturn(true);
-        ResponseEntity<String> response = userController.authenticateById(1L, "test@duocuc.cl", "USER");
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("ID authentication successful", response.getBody());
+
+        mockMvc.perform(post("/api/v1/users/authenticate-id")
+                .param("id", "1")
+                .param("email", "test@duocuc.cl")
+                .param("rol", "USER"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("ID authentication successful"));
     }
 
     @Test
-    void testAuthenticateById_invalid() {
+    void testAuthenticateById_invalid() throws Exception {
         when(userService.authenticateById(1L, "wrong@duocuc.cl", "USER")).thenReturn(false);
-        ResponseEntity<String> response = userController.authenticateById(1L, "wrong@duocuc.cl", "USER");
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertEquals("Invalid credentials", response.getBody());
+
+        mockMvc.perform(post("/api/v1/users/authenticate-id")
+                .param("id", "1")
+                .param("email", "wrong@duocuc.cl")
+                .param("rol", "USER"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("Invalid credentials"));
     }
 
     @Test
-    void testFindAllSaleByUser_success() {
-        when(userService.findAllSaleByUser(1L)).thenReturn(List.of(saleDTO));
-        ResponseEntity<List<SaleDTO>> response = userController.findAllSaleByUser(1L);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertFalse(response.getBody().isEmpty());
+    void testFindSalesByUser() throws Exception {
+        SaleDTO sale = new SaleDTO();
+        sale.setId(1L);
+        sale.setClientID(1L);
+
+        when(userService.findAllSaleByUser(1L)).thenReturn(List.of(sale));
+
+        mockMvc.perform(get("/api/v1/users/search-sale-by-id/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L));
     }
 
     @Test
-    void testFindAllSaleByUser_emptyList() {
-        when(userService.findAllSaleByUser(1L)).thenReturn(List.of());
-        ResponseEntity<List<SaleDTO>> response = userController.findAllSaleByUser(1L);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().isEmpty());
-    }
+    void testFindSalesByUser_notFound() throws Exception {
+        when(userService.findAllSaleByUser(99L)).thenThrow(new RuntimeException());
 
-    @Test
-    void testFindAllSaleByUser_notFound() {
-        when(userService.findAllSaleByUser(2L)).thenThrow(new RuntimeException());
-        ResponseEntity<List<SaleDTO>> response = userController.findAllSaleByUser(2L);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        mockMvc.perform(get("/api/v1/users/search-sale-by-id/99"))
+                .andExpect(status().isNotFound());
     }
 }

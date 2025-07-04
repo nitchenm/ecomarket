@@ -1,142 +1,150 @@
 package com.acopl.microservice_branch;
 
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.acopl.microservice_branch.assembler.BranchModelAssembler;
 import com.acopl.microservice_branch.controller.BranchControllerV2;
 import com.acopl.microservice_branch.dto.BranchDTO;
 import com.acopl.microservice_branch.service.BranchService;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(BranchControllerV2.class)
 class BranchControllerV2Test {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private BranchService branchService;
 
-    @Mock
+    @MockBean
     private BranchModelAssembler assembler;
 
-    @InjectMocks
-    private BranchControllerV2 branchControllerV2;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    private BranchDTO branchDTO;
-    private EntityModel<BranchDTO> entityModel;
+    @Test
+    void testListAllBranches_withBranches() throws Exception {
+        BranchDTO branch = new BranchDTO();
+        branch.setId(1L);
+        branch.setName("Sucursal");
 
-    @BeforeEach
-    void setUp() {
-        branchDTO = new BranchDTO();
-        branchDTO.setId(1L);
-        branchDTO.setName("Sucursal");
-        branchDTO.setAddress("Calle 123");
-        branchDTO.setCity("Ciudad");
-        branchDTO.setCountry("País");
+        when(branchService.findAll()).thenReturn(List.of(branch));
+        when(assembler.toModel(any(BranchDTO.class))).thenReturn(EntityModel.of(branch));
 
-        entityModel = EntityModel.of(branchDTO);
+        mockMvc.perform(get("/api/v2/branches"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.branchDTOList[0].id").value(1L));
     }
 
     @Test
-    void testListAllBranches_withBranches() {
-        when(branchService.findAll()).thenReturn(List.of(branchDTO));
-        when(assembler.toModel(branchDTO)).thenReturn(entityModel);
+    void testListAllBranches_noBranches() throws Exception {
+        when(branchService.findAll()).thenReturn(Collections.emptyList());
 
-        ResponseEntity<CollectionModel<EntityModel<BranchDTO>>> response = branchControllerV2.listAllBranches();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertFalse(response.getBody().getContent().isEmpty());
+        mockMvc.perform(get("/api/v2/branches"))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void testListAllBranches_noBranches() {
-        when(branchService.findAll()).thenReturn(List.of());
+    void testFindById_found() throws Exception {
+        BranchDTO branch = new BranchDTO();
+        branch.setId(1L);
+        branch.setName("Sucursal");
 
-        ResponseEntity<CollectionModel<EntityModel<BranchDTO>>> response = branchControllerV2.listAllBranches();
+        when(branchService.findById(1L)).thenReturn(branch);
+        when(assembler.toModel(any(BranchDTO.class))).thenReturn(EntityModel.of(branch));
 
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        mockMvc.perform(get("/api/v2/branches/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @Test
-    void testFindById_found() {
-        when(branchService.findById(1L)).thenReturn(branchDTO);
-        when(assembler.toModel(branchDTO)).thenReturn(entityModel);
+    void testFindById_notFound() throws Exception {
+        when(branchService.findById(99L)).thenThrow(new RuntimeException());
 
-        ResponseEntity<EntityModel<BranchDTO>> response = branchControllerV2.findById(1L);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(branchDTO, response.getBody().getContent());
+        mockMvc.perform(get("/api/v2/branches/99"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void testFindById_notFound() {
-        when(branchService.findById(2L)).thenThrow(new RuntimeException());
+    void testSaveBranch() throws Exception {
+        BranchDTO branch = new BranchDTO();
+        branch.setId(1L);
+        branch.setName("Sucursal");
 
-        ResponseEntity<EntityModel<BranchDTO>> response = branchControllerV2.findById(2L);
+        when(branchService.save(any(BranchDTO.class))).thenReturn(branch);
+        when(assembler.toModel(any(BranchDTO.class))).thenReturn(EntityModel.of(branch));
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        mockMvc.perform(post("/api/v2/branches")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(branch)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @Test
-    void testSaveBranch() {
-        when(branchService.save(any(BranchDTO.class))).thenReturn(branchDTO);
-        when(assembler.toModel(branchDTO)).thenReturn(entityModel);
+    void testUpdateBranch_found() throws Exception {
+        BranchDTO branch = new BranchDTO();
+        branch.setId(1L);
+        branch.setName("Sucursal Actualizada");
 
-        ResponseEntity<EntityModel<BranchDTO>> response = branchControllerV2.saveBranch(branchDTO);
+        when(branchService.updateBranch(eq(1L), any(BranchDTO.class))).thenReturn(branch);
+        when(assembler.toModel(any(BranchDTO.class))).thenReturn(EntityModel.of(branch));
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(branchDTO, response.getBody().getContent());
+        mockMvc.perform(put("/api/v2/branches/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(branch)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Sucursal Actualizada"));
     }
 
     @Test
-    void testUpdateBranch_found() {
-        when(branchService.updateBranch(eq(1L), any(BranchDTO.class))).thenReturn(branchDTO);
-        when(assembler.toModel(branchDTO)).thenReturn(entityModel);
+    void testUpdateBranch_notFound() throws Exception {
+        BranchDTO branch = new BranchDTO();
+        
+        when(branchService.updateBranch(eq(99L), any(BranchDTO.class)))
+                .thenThrow(new RuntimeException());
 
-        ResponseEntity<EntityModel<BranchDTO>> response = branchControllerV2.updateBranch(1L, branchDTO);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(branchDTO, response.getBody().getContent());
+        mockMvc.perform(put("/api/v2/branches/99")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(branch)))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void testUpdateBranch_notFound() {
-        when(branchService.updateBranch(eq(2L), any(BranchDTO.class))).thenThrow(new RuntimeException());
-
-        ResponseEntity<EntityModel<BranchDTO>> response = branchControllerV2.updateBranch(2L, branchDTO);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    void testDeleteBranch_success() {
+    void testDeleteBranch_success() throws Exception {
         doNothing().when(branchService).deleteById(1L);
 
-        ResponseEntity<Void> response = branchControllerV2.deleteBranch(1L);
-
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        mockMvc.perform(delete("/api/v2/branches/1"))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void testDeleteBranch_notFound() {
-        doThrow(new RuntimeException()).when(branchService).deleteById(2L);
+    void testDeleteBranch_notFound() throws Exception {
+        doThrow(new RuntimeException()).when(branchService).deleteById(99L);
 
-        ResponseEntity<Void> response = branchControllerV2.deleteBranch(2L);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        mockMvc.perform(delete("/api/v2/branches/99"))
+                .andExpect(status().isNotFound());
     }
 }

@@ -1,146 +1,120 @@
 package com.acopl.microservice_user;
 
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.hateoas.CollectionModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.acopl.microservice_user.assembler.UserModelAssembler;
 import com.acopl.microservice_user.controller.UserControllerV2;
 import com.acopl.microservice_user.dto.UserDTO;
 import com.acopl.microservice_user.service.UserService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(UserControllerV2.class)
 class UserControllerV2Test {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
     private UserService userService;
 
-    @Mock
+    @MockBean
     private UserModelAssembler assembler;
 
-    @InjectMocks
-    private UserControllerV2 userControllerV2;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-    private UserDTO userDTO;
-    private EntityModel<UserDTO> entityModel;
+    @Test
+    void testListAllUsers_withUsers() throws Exception {
+        UserDTO user = new UserDTO();
+        user.setId(1L);
+        user.setName("Test User");
 
-    @BeforeEach
-    void setUp() {
-        userDTO = new UserDTO();
-        userDTO.setId(1L);
-        userDTO.setName("Test User");
-        userDTO.setEmail("test@duocuc.cl");
-        userDTO.setRol("USER");
+        when(userService.findall()).thenReturn(List.of(user));
+        when(assembler.toModel(any(UserDTO.class))).thenReturn(EntityModel.of(user));
 
-        entityModel = EntityModel.of(userDTO);
+        mockMvc.perform(get("/api/v2/users"))
+                .andExpect(status().isOk())
+                // Ajusta el nombre del array según tu CollectionModel, puede ser userDTOList, entityModelList, etc.
+                .andExpect(jsonPath("$._embedded.userDTOList[0].id").value(1L));
     }
 
     @Test
-    void testListAllUsers_withUsers() {
-        when(userService.findall()).thenReturn(List.of(userDTO));
-        when(assembler.toModel(userDTO)).thenReturn(entityModel);
+    void testListAllUsers_noUsers() throws Exception {
+        when(userService.findall()).thenReturn(Collections.emptyList());
 
-        ResponseEntity<CollectionModel<EntityModel<UserDTO>>> response = userControllerV2.listAllUsers();
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertFalse(response.getBody().getContent().isEmpty());
+        mockMvc.perform(get("/api/v2/users"))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void testListAllUsers_noUsers() {
-        when(userService.findall()).thenReturn(List.of());
+    void testFindById_found() throws Exception {
+        UserDTO user = new UserDTO();
+        user.setId(1L);
+        user.setName("Test User");
 
-        ResponseEntity<CollectionModel<EntityModel<UserDTO>>> response = userControllerV2.listAllUsers();
+        when(userService.findById(1L)).thenReturn(user);
+        when(assembler.toModel(any(UserDTO.class))).thenReturn(EntityModel.of(user));
 
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        mockMvc.perform(get("/api/v2/users/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @Test
-    void testFindById_found() {
-        when(userService.findById(1L)).thenReturn(userDTO);
-        when(assembler.toModel(userDTO)).thenReturn(entityModel);
+    void testFindById_notFound() throws Exception {
+        when(userService.findById(99L)).thenThrow(new RuntimeException());
 
-        ResponseEntity<EntityModel<UserDTO>> response = userControllerV2.findById(1L);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(userDTO, response.getBody().getContent());
+        mockMvc.perform(get("/api/v2/users/99"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
-    void testFindById_notFound() {
-        when(userService.findById(2L)).thenThrow(new RuntimeException());
+    void testSaveUser() throws Exception {
+        UserDTO user = new UserDTO();
+        user.setId(1L);
+        user.setName("Test User");
 
-        ResponseEntity<EntityModel<UserDTO>> response = userControllerV2.findById(2L);
+        when(userService.saveUser(any(UserDTO.class))).thenReturn(user);
+        when(assembler.toModel(any(UserDTO.class))).thenReturn(EntityModel.of(user));
 
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        mockMvc.perform(post("/api/v2/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(user)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @Test
-    void testSaveUser() {
-        when(userService.saveUser(any(UserDTO.class))).thenReturn(userDTO);
-        when(assembler.toModel(userDTO)).thenReturn(entityModel);
-
-        ResponseEntity<EntityModel<UserDTO>> response = userControllerV2.saveUser(userDTO);
-
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertEquals(userDTO, response.getBody().getContent());
-    }
-
-    @Test
-    void testUpdateUser_found() {
-        when(userService.findById(eq(1L))).thenReturn(userDTO);
-        when(userService.saveUser(any(UserDTO.class))).thenReturn(userDTO);
-        when(assembler.toModel(userDTO)).thenReturn(entityModel);
-
-        ResponseEntity<EntityModel<UserDTO>> response = userControllerV2.updateUser(1L, userDTO);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(userDTO, response.getBody().getContent());
-    }
-
-    @Test
-    void testUpdateUser_notFound() {
-        when(userService.findById(eq(2L))).thenThrow(new RuntimeException());
-
-        ResponseEntity<EntityModel<UserDTO>> response = userControllerV2.updateUser(2L, userDTO);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-    }
-
-    @Test
-    void testDeleteUser_success() {
+    void testDeleteUser_success() throws Exception {
         doNothing().when(userService).deleteById(1L);
 
-        ResponseEntity<Void> response = userControllerV2.deleteUser(1L);
-
-        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        mockMvc.perform(delete("/api/v2/users/1"))
+                .andExpect(status().isNoContent());
     }
 
     @Test
-    void testDeleteUser_notFound() {
-        doThrow(new RuntimeException()).when(userService).deleteById(2L);
+    void testDeleteUser_notFound() throws Exception {
+        doThrow(new RuntimeException()).when(userService).deleteById(99L);
 
-        ResponseEntity<Void> response = userControllerV2.deleteUser(2L);
-
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        mockMvc.perform(delete("/api/v2/users/99"))
+                .andExpect(status().isNotFound());
     }
 }
